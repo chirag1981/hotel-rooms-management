@@ -5,6 +5,10 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 14px;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-app);
@@ -15,11 +19,20 @@ body {
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
+  font-size: 0.85rem;
 }
 
 .font-mono {
   font-family: var(--font-mono);
 }
+
+/* Headings scale */
+h1, .h1 { font-size: 1.5rem; }
+h2, .h2 { font-size: 1.35rem; }
+h3, .h3 { font-size: 1.2rem; }
+h4, .h4 { font-size: 1.05rem; }
+h5, .h5 { font-size: 0.92rem; }
+h6, .h6 { font-size: 0.82rem; }
 
 /* ==========================================================================
    App Layout: Sidebar (Navy #142B4A) + Main Content (Slate #F8FAFC)
@@ -31,7 +44,7 @@ body {
 }
 
 .app-sidebar {
-  width: 250px;
+  width: 235px;
   background: var(--bg-sidebar);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 2px 0 16px rgba(15, 23, 42, 0.08);
@@ -43,37 +56,37 @@ body {
 }
 
 .sidebar-header {
-  padding: 1.25rem 1.15rem;
+  padding: 1rem 0.95rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
   background: rgba(0, 0, 0, 0.12);
 }
 
 .brand-icon-3d {
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   background: linear-gradient(135deg, var(--color-teal), var(--color-teal-hover));
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #FFFFFF;
-  font-size: 1.25rem;
-  box-shadow: 0 3px 8px rgba(13, 148, 136, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  font-size: 1.1rem;
+  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
   transform: perspective(200px) translateZ(4px);
 }
 
 .brand-title {
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   color: #FFFFFF;
   line-height: 1.2;
 }
 
 .brand-subtitle {
-  font-size: 0.68rem;
+  font-size: 0.64rem;
   color: var(--text-sidebar-muted);
   font-weight: 500;
   text-transform: uppercase;
@@ -81,18 +94,18 @@ body {
 }
 
 .sidebar-nav {
-  padding: 1rem 0.75rem 2rem 0.75rem;
+  padding: 0.75rem 0.6rem 2rem 0.6rem;
   flex: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.2rem;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
 }
 
 .sidebar-nav::-webkit-scrollbar {
-  width: 5px;
+  width: 4px;
 }
 .sidebar-nav::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
@@ -100,33 +113,33 @@ body {
 }
 
 .nav-section-title {
-  font-size: 0.64rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: #64748B;
-  padding: 0.65rem 0.65rem 0.2rem 0.65rem;
+  padding: 0.55rem 0.55rem 0.15rem 0.55rem;
 }
 
 .nav-item-3d {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.52rem 0.75rem;
+  gap: 0.65rem;
+  padding: 0.44rem 0.65rem;
   border-radius: var(--radius-md);
   color: #CBD5E1;
   text-decoration: none;
-  font-size: 0.86rem;
+  font-size: 0.8rem;
   font-weight: 500;
   transition: var(--transition-smooth);
   border: 1px solid transparent;
 }
 
 .nav-item-3d i {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   color: #94A3B8;
   transition: var(--transition-smooth);
-  width: 18px;
+  width: 16px;
   text-align: center;
 }
 
@@ -134,7 +147,7 @@ body {
   background: rgba(255, 255, 255, 0.08);
   color: #FFFFFF;
   border-color: rgba(255, 255, 255, 0.05);
-  transform: translateX(3px);
+  transform: translateX(2px);
 }
 
 .nav-item-3d:hover i {
@@ -145,7 +158,7 @@ body {
   background: var(--color-teal);
   color: #FFFFFF;
   border-color: var(--color-teal);
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.35);
+  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.35);
   font-weight: 600;
 }
 
@@ -163,14 +176,14 @@ body {
 
 /* Top Navbar */
 .app-topbar {
-  height: 60px;
+  height: 52px;
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border-light);
-  padding: 0 1.5rem;
+  padding: 0 1.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02);
 }
 
 .topbar-actions {
@@ -186,9 +199,9 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.45rem;
-  padding: 0.45rem 0.95rem;
-  font-size: 0.84rem;
+  gap: 0.35rem;
+  padding: 0.38rem 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   border-radius: var(--radius-md);
   border: none;
@@ -197,10 +210,17 @@ body {
   transition: var(--transition-tactile);
   position: relative;
   user-select: none;
+  line-height: 1.25;
 }
 
 .btn-3d:active {
   transform: translateY(2px);
+}
+
+.btn-3d-sm {
+  padding: 0.22rem 0.55rem;
+  font-size: 0.72rem;
+  border-radius: var(--radius-sm);
 }
 
 .btn-3d-primary {
@@ -262,7 +282,7 @@ body {
    ========================================================================== */
 .card-3d {
   background: var(--bg-surface);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   border: 1px solid var(--border-light);
   box-shadow: var(--shadow-3d-card);
   transition: var(--transition-smooth);
@@ -275,7 +295,7 @@ body {
 }
 
 .card-header-3d {
-  padding: 0.75rem 1rem;
+  padding: 0.55rem 0.85rem;
   background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
   border-bottom: 1px solid var(--border-light);
   display: flex;
@@ -283,29 +303,30 @@ body {
   justify-content: space-between;
 }
 
-/* Compact Table Styling for Dashboard */
-.table-dashboard {
-  font-size: 0.82rem;
+/* Compact Table Styling for Dashboard & All System Tables */
+.table-dashboard, .table {
+  font-size: 0.78rem;
   margin-bottom: 0;
 }
 
-.table-dashboard th {
-  font-size: 0.7rem;
+.table-dashboard th, .table thead th {
+  font-size: 0.67rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--text-secondary);
   background: #F8FAFC;
-  padding: 0.45rem 0.65rem;
+  padding: 0.38rem 0.55rem;
   border-bottom: 1px solid var(--border-light);
   white-space: nowrap;
 }
 
-.table-dashboard td {
-  padding: 0.5rem 0.65rem;
+.table-dashboard td, .table tbody td {
+  padding: 0.38rem 0.55rem;
   vertical-align: middle;
   border-bottom: 1px solid #F1F5F9;
   color: var(--text-primary);
+  font-size: 0.78rem;
 }
 
 .table-dashboard tr:last-child td {
@@ -316,9 +337,9 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem;
-  padding: 0.22rem 0.6rem;
-  font-size: 0.74rem;
+  gap: 0.2rem;
+  padding: 0.16rem 0.48rem;
+  font-size: 0.68rem;
   font-weight: 600;
   border-radius: var(--radius-sm);
   text-decoration: none;
@@ -347,6 +368,16 @@ body {
   color: #FFFFFF;
 }
 
+.btn-action-compact-danger {
+  background: #DC2626;
+  color: #FFFFFF;
+  border: 1px solid #B91C1C;
+}
+.btn-action-compact-danger:hover {
+  background: #B91C1C;
+  color: #FFFFFF;
+}
+
 .btn-action-compact-light {
   background: #FFFFFF;
   color: var(--text-primary);
@@ -358,22 +389,21 @@ body {
   border-color: #CBD5E1;
 }
 
-
 /* ==========================================================================
-   3D Metric Stat Cards (Compact, Uniform & Elegant)
+   3D Metric Stat Cards (Ultra-Crisp, Compact & Elegant)
    ========================================================================== */
 .stat-card-3d {
   background: var(--bg-surface);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   border: 1px solid var(--border-light);
-  padding: 0.85rem 1rem;
+  padding: 0.65rem 0.85rem;
   box-shadow: var(--shadow-3d-card);
   transition: var(--transition-smooth);
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: relative;
-  min-height: 92px;
+  min-height: 80px;
 }
 
 .stat-card-3d:hover {
@@ -386,11 +416,11 @@ body {
   flex-direction: column;
   justify-content: center;
   min-width: 0;
-  gap: 0.15rem;
+  gap: 0.1rem;
 }
 
 .stat-label {
-  font-size: 0.72rem;
+  font-size: 0.67rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -401,14 +431,14 @@ body {
 }
 
 .stat-value {
-  font-size: 1.35rem;
+  font-size: 1.18rem;
   font-weight: 800;
   color: var(--text-primary);
   line-height: 1.15;
 }
 
 .stat-sub {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: var(--text-muted);
   line-height: 1;
   white-space: nowrap;
@@ -417,14 +447,14 @@ body {
 }
 
 .stat-icon-3d {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.15rem;
+  font-size: 0.98rem;
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 2px 4px rgba(15, 23, 42, 0.05);
 }
 
@@ -478,30 +508,30 @@ body {
 }
 
 /* ==========================================================================
-   3D Room Grid Cards
+   3D Room Grid Cards (Compact, Balanced & Elegant)
    ========================================================================== */
 .room-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+  gap: 0.65rem;
 }
 
 .room-card-3d {
   background: #FFFFFF;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   border: 1px solid var(--border-light);
   box-shadow: var(--shadow-3d-card);
-  padding: 1rem;
+  padding: 0.55rem 0.65rem;
   transition: var(--transition-smooth);
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-top: 4px solid var(--border-light);
+  border-top: 3px solid var(--border-light);
 }
 
 .room-card-3d:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-3d-card-hover);
 }
 
@@ -516,73 +546,24 @@ body {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.4rem;
 }
 
 .room-number-badge {
-  font-size: 1.15rem;
-  font-weight: 800;
+  font-size: 0.88rem;
+  font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 .room-card-body {
-  font-size: 0.82rem;
+  font-size: 0.72rem;
   color: var(--text-secondary);
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  margin-bottom: 0.75rem;
+  gap: 0.18rem;
+  margin-bottom: 0.45rem;
 }
-
-/* ==========================================================================
-   3D Restaurant Table Grid
-   ========================================================================== */
-.table-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.table-card-3d {
-  background: #FFFFFF;
-  border-radius: var(--radius-xl);
-  border: 2px solid var(--border-light);
-  padding: 1.15rem;
-  box-shadow: var(--shadow-3d-card);
-  transition: var(--transition-smooth);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.table-card-3d:hover {
-  transform: scale(1.02);
-  box-shadow: var(--shadow-3d-card-hover);
-}
-
-.table-disc-3d {
-  width: 62px;
-  height: 62px;
-  border-radius: 50%;
-  background: linear-gradient(145deg, #FFFFFF, #F8FAFC);
-  border: 3px solid var(--border-light);
-  box-shadow: 0 3px 6px rgba(15, 23, 42, 0.06), inset 0 2px 4px rgba(255, 255, 255, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 1.05rem;
-  margin-bottom: 0.65rem;
-}
-
-.table-card-3d.status-available .table-disc-3d { border-color: var(--color-available); color: var(--color-available-dark); }
-.table-card-3d.status-occupied .table-disc-3d { border-color: var(--color-occupied); color: var(--color-occupied-dark); background: var(--color-occupied-light); }
-.table-card-3d.status-reserved .table-disc-3d { border-color: var(--color-reserved); color: var(--color-reserved-dark); background: var(--color-reserved-light); }
-.table-card-3d.status-cleaning .table-disc-3d { border-color: var(--color-cleaning); color: var(--color-cleaning-dark); background: var(--color-cleaning-light); }
 
 /* ==========================================================================
    3D Badges & Status Pills (Consistent Colors)
@@ -590,13 +571,14 @@ body {
 .badge-3d {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.25rem 0.6rem;
-  font-size: 0.72rem;
+  gap: 0.25rem;
+  padding: 0.14rem 0.42rem;
+  font-size: 0.62rem;
   font-weight: 700;
   border-radius: var(--radius-pill);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 1px 3px rgba(15, 23, 42, 0.04);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 1px 2px rgba(15, 23, 42, 0.03);
   text-transform: capitalize;
+  line-height: 1.15;
 }
 
 .badge-3d-available, .badge-3d-success { background: var(--color-available-light); color: var(--color-available-dark); border: 1px solid var(--color-available-border); }
@@ -612,11 +594,11 @@ body {
    ========================================================================== */
 .room-alloc-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 0.65rem;
-  max-height: 260px;
+  grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+  gap: 0.45rem;
+  max-height: 240px;
   overflow-y: auto;
-  padding: 0.35rem 0.15rem;
+  padding: 0.25rem 0.1rem;
 }
 
 .room-alloc-card-3d {
@@ -624,27 +606,27 @@ body {
   flex-direction: column;
   justify-content: space-between;
   background: #FFFFFF;
-  border: 2px solid var(--border-light);
+  border: 1.5px solid var(--border-light);
   border-radius: var(--radius-md);
-  padding: 0.6rem 0.7rem;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  padding: 0.45rem 0.55rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.9);
   transition: var(--transition-smooth);
   cursor: pointer;
   user-select: none;
-  min-height: 80px;
+  min-height: 68px;
 }
 
 .room-alloc-card-3d:hover {
   border-color: var(--color-teal);
-  transform: translateY(-2px);
-  box-shadow: 0 3px 6px rgba(13, 148, 136, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(13, 148, 136, 0.15);
 }
 
 .room-selector-input:checked + .room-alloc-card-3d {
   border-color: var(--color-teal);
   background: linear-gradient(135deg, var(--color-teal-light), #FFFFFF);
-  box-shadow: 0 3px 0 var(--color-teal-dark), 0 4px 10px var(--color-teal-glow);
-  transform: translateY(-2px);
+  box-shadow: 0 2px 0 var(--color-teal-dark), 0 3px 8px var(--color-teal-glow);
+  transform: translateY(-1px);
 }
 
 .room-selector-input:checked + .room-alloc-card-3d .room-alloc-num {
@@ -659,7 +641,7 @@ body {
 }
 
 .room-alloc-num {
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -669,9 +651,9 @@ body {
    ========================================================================== */
 .form-control-3d, .form-select-3d {
   border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  padding: 0.55rem 0.85rem;
-  font-size: 0.88rem;
+  border-radius: var(--radius-sm);
+  padding: 0.38rem 0.65rem;
+  font-size: 0.78rem;
   background-color: #FFFFFF;
   color: var(--text-primary);
   box-shadow: var(--shadow-3d-inset);
@@ -680,7 +662,7 @@ body {
 
 .form-control-3d:focus, .form-select-3d:focus {
   border-color: var(--color-teal);
-  box-shadow: 0 0 0 3px var(--color-teal-light), inset 0 1px 2px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 0 0 2px var(--color-teal-light), inset 0 1px 2px rgba(15, 23, 42, 0.04);
   outline: none;
 }
 

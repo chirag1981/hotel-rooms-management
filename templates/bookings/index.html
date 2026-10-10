@@ -16,11 +16,11 @@
 </div>
 
 <!-- Search and Filter Bar -->
-<div class="card-3d p-3 mb-4">
+<div class="card-3d p-2 mb-3">
     <form method="GET" class="row g-2 align-items-center">
         <div class="col-md-4">
             <div class="input-group">
-                <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
+                <span class="input-group-text bg-light py-1"><i class="bi bi-search text-muted small"></i></span>
                 <input type="text" name="q" value="{{ search_query }}" class="form-control form-control-3d" placeholder="Search booking #, guest name, phone...">
             </div>
         </div>
@@ -36,9 +36,9 @@
             <input type="date" name="date" value="{{ date_filter }}" class="form-control form-control-3d" onchange="this.form.submit()" title="Filter by Check-in/out date">
         </div>
         <div class="col-md-2 d-flex gap-1">
-            <button type="submit" class="btn-3d btn-3d-primary w-100">Filter</button>
+            <button type="submit" class="btn-3d btn-3d-primary w-100 py-1">Filter</button>
             {% if status_filter or search_query or date_filter %}
-            <a href="{{ url_for('bookings.index') }}" class="btn btn-light border px-2" title="Reset Filters"><i class="bi bi-x-lg"></i></a>
+            <a href="{{ url_for('bookings.index') }}" class="btn btn-light border px-2 py-1" title="Reset Filters"><i class="bi bi-x-lg"></i></a>
             {% endif %}
         </div>
     </form>
@@ -46,64 +46,64 @@
 
 <!-- Bookings Table -->
 <div class="card-3d">
-    <div class="table-responsive p-2">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-                <tr class="small text-muted">
-                    <th>Booking #</th>
+    <div class="table-responsive">
+        <table class="table table-hover table-dashboard align-middle mb-0">
+            <thead>
+                <tr>
+                    <th style="min-width: 120px;">Booking #</th>
                     <th>Guest Details</th>
                     <th>Dates & Stay</th>
                     <th>Room(s)</th>
                     <th>Total Amount</th>
                     <th>Advance</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for b in bookings %}
                 <tr>
-                    <td>
-                        <a href="{{ url_for('bookings.detail', booking_id=b.id) }}" class="font-mono fw-bold text-primary text-decoration-none">
+                    <td class="text-nowrap">
+                        <a href="{{ url_for('bookings.detail', booking_id=b.id) }}" class="font-mono fw-bold text-decoration-none" style="color: var(--color-teal); font-size: 0.78rem;">
                             {{ b.booking_number }}
                         </a>
-                        <div class="text-muted small">{{ b.booking_source }}</div>
+                        <div class="text-muted" style="font-size: 0.67rem;">{{ b.booking_source }}</div>
                     </td>
                     <td>
-                        <div class="fw-bold">{{ b.guest.full_name }}</div>
-                        <div class="text-muted small"><i class="bi bi-telephone me-1"></i>{{ b.guest.mobile }}</div>
+                        <div class="fw-bold text-dark text-nowrap" style="font-size: 0.8rem;">{{ b.guest.full_name }}</div>
+                        <div class="text-muted text-nowrap" style="font-size: 0.7rem;"><i class="bi bi-telephone me-1"></i>{{ b.guest.mobile }}</div>
                     </td>
-                    <td>
-                        <div class="small fw-semibold">{{ b.checkin_date.strftime('%d %b') }} &rarr; {{ b.checkout_date.strftime('%d %b %Y') }}</div>
-                        <div class="text-muted small">{{ b.total_nights }} night(s) &bull; {{ b.adults_count }} Ad / {{ b.children_count }} Ch</div>
+                    <td class="text-nowrap">
+                        <div class="fw-semibold text-dark" style="font-size: 0.76rem;">{{ b.checkin_date.strftime('%d %b') }} &rarr; {{ b.checkout_date.strftime('%d %b %Y') }}</div>
+                        <div class="text-muted" style="font-size: 0.68rem;">{{ b.total_nights }}n &bull; {{ b.adults_count }} Ad / {{ b.children_count }} Ch</div>
                     </td>
-                    <td>
-                        <span class="badge bg-light text-dark border">
+                    <td class="text-nowrap">
+                        <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 0.7rem; font-weight: 600;">
                             {{ b.assigned_room_numbers|join(', ') if b.assigned_room_numbers else (b.room_category.name if b.room_category else 'Standard') }}
                         </span>
                     </td>
-                    <td class="font-mono fw-bold text-dark">
+                    <td class="font-mono fw-bold text-dark text-nowrap" style="font-size: 0.78rem;">
                         {{ b.total_amount|currency(settings.currency_symbol) }}
                     </td>
-                    <td class="font-mono text-success">
+                    <td class="font-mono text-success text-nowrap" style="font-size: 0.76rem;">
                         {{ b.advance_payment|currency(settings.currency_symbol) }}
                     </td>
-                    <td>
+                    <td class="text-center text-nowrap">
                         <span class="badge-3d badge-3d-{{ 'success' if b.status == 'Checked In' else ('secondary' if b.status == 'Checked Out' else ('warning' if b.status == 'Pending' else ('primary' if b.status == 'Confirmed' else 'danger'))) }}">
                             {{ b.status }}
                         </span>
                     </td>
-                    <td>
-                        <div class="d-flex align-items-center gap-1">
-                            <a href="{{ url_for('bookings.detail', booking_id=b.id) }}" class="btn btn-sm btn-light border py-0 px-2 small" title="View Details">
-                                <i class="bi bi-eye"></i>
+                    <td class="text-end text-nowrap">
+                        <div class="d-inline-flex align-items-center gap-1">
+                            <a href="{{ url_for('bookings.detail', booking_id=b.id) }}" class="btn-action-compact btn-action-compact-light" title="View Details">
+                                <i class="bi bi-eye"></i> View
                             </a>
                             {% if b.status == 'Confirmed' %}
-                            <a href="{{ url_for('checkin_out.process_checkin', booking_id=b.id) }}" class="btn btn-sm btn-success py-0 px-2 fw-semibold" title="Check-in Guest">
+                            <a href="{{ url_for('checkin_out.process_checkin', booking_id=b.id) }}" class="btn-action-compact btn-action-compact-green" title="Check-in Guest">
                                 <i class="bi bi-box-arrow-in-right"></i> Check-in
                             </a>
                             {% elif b.status == 'Checked In' %}
-                            <a href="{{ url_for('checkin_out.process_checkout', booking_id=b.id) }}" class="btn btn-sm btn-danger py-0 px-2 fw-semibold" title="Check-out">
+                            <a href="{{ url_for('checkin_out.process_checkout', booking_id=b.id) }}" class="btn-action-compact btn-action-compact-danger" title="Check-out">
                                 <i class="bi bi-box-arrow-right"></i> Check-out
                             </a>
                             {% endif %}

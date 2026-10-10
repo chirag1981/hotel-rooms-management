@@ -181,17 +181,17 @@
     <!-- Today's Expected & Checked-in Guests -->
     <div class="col-12 col-xl-6">
         <div class="card-3d h-100">
-            <div class="card-header-3d py-2 px-3">
-                <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 0.88rem;">
+            <div class="card-header-3d py-1 px-3">
+                <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-1" style="font-size: 0.82rem;">
                     <i class="bi bi-box-arrow-in-right" style="color: var(--color-teal);"></i> Today's Check-ins
                 </h6>
-                <a href="{{ url_for('checkin_out.today_checkins') }}" class="btn btn-sm btn-light border py-0 px-2 text-muted" style="font-size: 0.72rem;">View All</a>
+                <a href="{{ url_for('checkin_out.today_checkins') }}" class="btn btn-sm btn-light border py-0 px-2 text-muted" style="font-size: 0.68rem;">View All</a>
             </div>
             <div class="table-responsive">
-                <table class="table table-hover table-dashboard align-middle">
+                <table class="table table-hover table-dashboard align-middle mb-0">
                     <thead>
                         <tr>
-                            <th style="min-width: 130px;">Booking Ref</th>
+                            <th style="min-width: 110px;">Booking Ref</th>
                             <th>Guest Details</th>
                             <th class="text-center">Room</th>
                             <th class="text-center">Time</th>
@@ -203,22 +203,22 @@
                         {% for b in today_checkins %}
                         <tr>
                             <td class="text-nowrap">
-                                <span class="font-mono fw-bold" style="color: var(--color-teal); font-size: 0.8rem;">{{ b.booking_number }}</span>
+                                <span class="font-mono fw-bold" style="color: var(--color-teal); font-size: 0.76rem;">{{ b.booking_number }}</span>
                             </td>
                             <td>
-                                <div class="fw-bold text-dark text-nowrap" style="font-size: 0.82rem;">{{ b.guest.full_name }}</div>
-                                <div class="text-muted text-nowrap" style="font-size: 0.72rem;"><i class="bi bi-telephone me-1"></i>{{ b.guest.mobile }}</div>
+                                <div class="fw-bold text-dark text-nowrap" style="font-size: 0.78rem;">{{ b.guest.full_name }}</div>
+                                <div class="text-muted text-nowrap" style="font-size: 0.68rem;"><i class="bi bi-telephone me-1"></i>{{ b.guest.mobile }}</div>
                             </td>
                             <td class="text-center text-nowrap">
-                                <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 0.72rem; font-weight: 600;">
+                                <span class="badge bg-light text-dark border px-2 py-0" style="font-size: 0.68rem; font-weight: 600;">
                                     {{ b.assigned_room_numbers|join(', ') if b.assigned_room_numbers else (b.room_category.name if b.room_category else 'Unassigned') }}
                                 </span>
                             </td>
-                            <td class="text-center text-nowrap text-muted" style="font-size: 0.78rem;">
+                            <td class="text-center text-nowrap text-muted" style="font-size: 0.72rem;">
                                 {{ b.expected_checkin_time }}
                             </td>
                             <td class="text-center text-nowrap">
-                                <span class="badge-3d badge-3d-{{ 'available' if b.status == 'Checked In' else 'reserved' }}" style="font-size: 0.68rem; padding: 0.15rem 0.45rem;">
+                                <span class="badge-3d badge-3d-{{ 'available' if b.status == 'Checked In' else 'reserved' }}">
                                     {{ b.status }}
                                 </span>
                             </td>
@@ -248,17 +248,17 @@
     <!-- Today's Expected & Processed Check-outs -->
     <div class="col-12 col-xl-6">
         <div class="card-3d h-100">
-            <div class="card-header-3d py-2 px-3">
-                <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 0.88rem;">
+            <div class="card-header-3d py-1 px-3">
+                <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-1" style="font-size: 0.82rem;">
                     <i class="bi bi-box-arrow-right" style="color: var(--color-teal);"></i> Today's Check-outs
                 </h6>
-                <a href="{{ url_for('checkin_out.today_checkouts') }}" class="btn btn-sm btn-light border py-0 px-2 text-muted" style="font-size: 0.72rem;">View All</a>
+                <a href="{{ url_for('checkin_out.today_checkouts') }}" class="btn btn-sm btn-light border py-0 px-2 text-muted" style="font-size: 0.68rem;">View All</a>
             </div>
             <div class="table-responsive">
-                <table class="table table-hover table-dashboard align-middle">
+                <table class="table table-hover table-dashboard align-middle mb-0">
                     <thead>
                         <tr>
-                            <th style="min-width: 130px;">Booking Ref</th>
+                            <th style="min-width: 110px;">Booking Ref</th>
                             <th>Guest Details</th>
                             <th class="text-center">Room</th>
                             <th class="text-center">Time</th>
@@ -270,22 +270,22 @@
                         {% for b in today_checkouts %}
                         <tr>
                             <td class="text-nowrap">
-                                <span class="font-mono fw-bold" style="color: var(--color-teal); font-size: 0.8rem;">{{ b.booking_number }}</span>
+                                <span class="font-mono fw-bold" style="color: var(--color-teal); font-size: 0.76rem;">{{ b.booking_number }}</span>
                             </td>
                             <td>
-                                <div class="fw-bold text-dark text-nowrap" style="font-size: 0.82rem;">{{ b.guest.full_name }}</div>
-                                <div class="text-muted text-nowrap" style="font-size: 0.72rem;"><i class="bi bi-telephone me-1"></i>{{ b.guest.mobile }}</div>
+                                <div class="fw-bold text-dark text-nowrap" style="font-size: 0.78rem;">{{ b.guest.full_name }}</div>
+                                <div class="text-muted text-nowrap" style="font-size: 0.68rem;"><i class="bi bi-telephone me-1"></i>{{ b.guest.mobile }}</div>
                             </td>
                             <td class="text-center text-nowrap">
-                                <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 0.72rem; font-weight: 600;">
+                                <span class="badge bg-light text-dark border px-2 py-0" style="font-size: 0.68rem; font-weight: 600;">
                                     {{ b.assigned_room_numbers|join(', ') if b.assigned_room_numbers else (b.room_category.name if b.room_category else 'Unassigned') }}
                                 </span>
                             </td>
-                            <td class="text-center text-nowrap text-muted" style="font-size: 0.78rem;">
+                            <td class="text-center text-nowrap text-muted" style="font-size: 0.72rem;">
                                 {{ b.expected_checkout_time }}
                             </td>
                             <td class="text-center text-nowrap">
-                                <span class="badge-3d badge-3d-{{ 'available' if b.status == 'Checked In' else ('secondary' if b.status == 'Checked Out' else 'reserved') }}" style="font-size: 0.68rem; padding: 0.15rem 0.45rem;">
+                                <span class="badge-3d badge-3d-{{ 'available' if b.status == 'Checked In' else ('secondary' if b.status == 'Checked Out' else 'reserved') }}">
                                     {{ b.status }}
                                 </span>
                             </td>

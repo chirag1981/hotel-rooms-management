@@ -22,33 +22,34 @@
 {% endif %}
 
 <div class="card-3d">
-    <div class="table-responsive p-2">
-        <table class="table table-hover align-middle mb-0">
+    <div class="table-responsive">
+        <table class="table table-hover table-dashboard align-middle mb-0">
             <thead class="table-light">
                 <tr class="small text-muted">
                     <th>Room & Floor</th>
-                    <th>Guest Name</th>
-                    <th>Contact</th>
+                    <th>Guest Details</th>
                     <th>Planned Check-out</th>
-                    <th>Elapsed Overdue Time</th>
+                    <th>Overdue By</th>
                     <th>Booking Ref</th>
-                    <th>Action</th>
+                    <th class="text-end">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for stay in overdue_list %}
                 <tr class="table-danger-subtle">
                     <td>
-                        <span class="font-mono fw-bold fs-6 text-dark">Room {{ stay.room.room_number }}</span>
-                        <div class="text-muted small">{{ stay.room.floor.name }}</div>
+                        <span class="font-mono fw-bold text-dark">Room {{ stay.room.room_number }}</span>
+                        <div class="text-muted" style="font-size: 0.72rem;">{{ stay.room.floor.name }}</div>
                     </td>
-                    <td class="fw-bold text-dark">{{ stay.guest.full_name }}</td>
-                    <td class="small">{{ stay.guest.mobile }}</td>
-                    <td class="small font-mono text-secondary">
+                    <td>
+                        <div class="fw-bold text-dark">{{ stay.guest.full_name }}</div>
+                        <div class="text-muted" style="font-size: 0.72rem;"><i class="bi bi-telephone"></i> {{ stay.guest.mobile }}</div>
+                    </td>
+                    <td class="font-mono text-secondary">
                         {{ stay.planned_checkout.strftime('%d %b %Y, %I:%M %p') }}
                     </td>
                     <td>
-                        <span class="badge bg-danger text-white py-1 px-2 font-mono">
+                        <span class="badge bg-danger text-white py-1 px-2 font-mono" style="font-size: 0.72rem;">
                             <i class="bi bi-clock-history me-1"></i>{{ stay.planned_checkout|overdue_text }}
                         </span>
                     </td>
@@ -57,17 +58,17 @@
                             {{ stay.booking.booking_number }}
                         </a>
                     </td>
-                    <td>
-                        <a href="{{ url_for('checkin_out.process_checkout', booking_id=stay.booking_id) }}" class="btn-3d btn-3d-danger btn-sm py-1 px-3">
-                            <i class="bi bi-box-arrow-right"></i> Complete Check-out
+                    <td class="text-end">
+                        <a href="{{ url_for('checkin_out.process_checkout', booking_id=stay.booking_id) }}" class="btn-3d btn-3d-danger btn-action-compact">
+                            <i class="bi bi-box-arrow-right"></i> Check-out
                         </a>
                     </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="7" class="text-center text-muted py-5">
-                        <i class="bi bi-check2-all fs-1 d-block mb-2 text-success"></i>
-                        <h6 class="fw-bold text-success">No Overdue Check-outs</h6>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        <i class="bi bi-check2-all fs-3 d-block mb-1 text-success"></i>
+                        <h6 class="fw-bold text-success mb-1" style="font-size: 0.88rem;">No Overdue Check-outs</h6>
                         <span class="text-muted small">All occupied rooms are currently operating within their scheduled stay window.</span>
                     </td>
                 </tr>
