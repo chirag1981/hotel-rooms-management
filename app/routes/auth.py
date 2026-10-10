@@ -34,7 +34,7 @@ def login():
             flash(f'Welcome back, {user.full_name}!', 'success')
 
             next_page = request.args.get('next')
-            if next_page and next_page.startswith('/'):
+            if next_page and next_page.startswith('/') and not next_page.startswith('//') and not next_page.startswith('/\\'):
                 return redirect(next_page)
             return redirect(url_for('dashboard.index'))
         else:

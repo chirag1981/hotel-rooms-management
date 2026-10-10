@@ -43,7 +43,7 @@ class HotelSettings(db.Model):
     pincode = db.Column(db.String(20), nullable=True, default='400020')
     country = db.Column(db.String(100), nullable=True, default='India')
     phone = db.Column(db.String(50), nullable=True, default='+91 98765 43210')
-    email = db.Column(db.String(120), nullable=True, default='reservations@grandhorizonhotel.com')
+    email = db.Column(db.String(120), nullable=True, default='reservations@hotelroomsmanagement.com')
     gstin = db.Column(db.String(50), nullable=True, default='27AAACG0123M1Z5')
     currency_code = db.Column(db.String(10), nullable=False, default='INR')
     currency_symbol = db.Column(db.String(10), nullable=False, default='₹')
