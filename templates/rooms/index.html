@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}Rooms & Floors Management{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Rooms & Floor Layout</h3>
+        <p class="text-muted small mb-0">Floor-wise physical room grid and live occupancy status</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        {% if current_user.is_manager %}
+        <a href="{{ url_for('categories.index') }}" class="btn-3d btn-3d-secondary btn-sm">
+            <i class="bi bi-tags"></i> Room Categories
+        </a>
+        <a href="{{ url_for('rooms.add') }}" class="btn-3d btn-3d-primary btn-sm">
+            <i class="bi bi-plus-lg"></i> Add New Room
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Status Filter Tabs -->
+<div class="card-3d p-3 mb-4">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <!-- Quick Status Pills -->
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ url_for('rooms.index', floor=floor_filter, category=category_filter) }}" class="btn btn-sm {% if not status_filter %}btn-primary{% else %}btn-light border{% endif %} rounded-pill px-3">
+                All Rooms ({{ status_counts.all }})
+            </a>
+            <a href="{{ url_for('rooms.index', status=RoomStatus.AVAILABLE, floor=floor_filter, category=category_filter) }}" class="btn btn-sm {% if status_filter == RoomStatus.AVAILABLE %}btn-success text-white{% else %}btn-light border{% endif %} rounded-pill px-3">
+                <i class="bi bi-circle-fill text-success small me-1"></i> Available ({{ status_counts.available }})
+            </a>
+            <a href="{{ url_for('rooms.index', status=RoomStatus.OCCUPIED, floor=floor_filter, category=category_filter) }}" class="btn btn-sm {% if status_filter == RoomStatus.OCCUPIED %}btn-danger text-white{% else %}btn-light border{% endif %} rounded-pill px-3">
+                <i class="bi bi-circle-fill text-danger small me-1"></i> Occupied ({{ status_counts.occupied }})
+            </a>
+            <a href="{{ url_for('rooms.index', status=RoomStatus.RESERVED, floor=floor_filter, category=category_filter) }}" class="btn btn-sm {% if status_filter == RoomStatus.RESERVED %}btn-warning text-dark{% else %}btn-light border{% endif %} rounded-pill px-3">
+                <i class="bi bi-circle-fill text-warning small me-1"></i> Reserved ({{ status_counts.reserved }})
+            </a>
+            <a href="{{ url_for('rooms.index', status=RoomStatus.CLEANING, floor=floor_filter, category=category_filter) }}" class="btn btn-sm {% if status_filter == RoomStatus.CLEANING %}btn-info text-white{% else %}btn-light border{% endif %} rounded-pill px-3">
+                <i class="bi bi-stars text-info small me-1"></i> Cleaning ({{ status_counts.cleaning }})
+            </a>
+            <a href="{{ url_for('rooms.index', status=RoomStatus.MAINTENANCE, floor=floor_filter, category=category_filter) }}" class="btn btn-sm {% if status_filter == RoomStatus.MAINTENANCE %}btn-secondary text-white{% else %}btn-light border{% endif %} rounded-pill px-3">
+                <i class="bi bi-tools text-secondary small me-1"></i> Maintenance ({{ status_counts.maintenance }})
+            </a>
+        </div>
+
+        <!-- Dropdown Filters -->
+        <form method="GET" class="d-flex align-items-center gap-2">
+            {% if status_filter %}<input type="hidden" name="status" value="{{ status_filter }}">{% endif %}
+            
+            <select name="floor" class="form-select form-select-sm form-select-3d" onchange="this.form.submit()">
+                <option value="">All Floors</option>
+                {% for f in floors %}
+                <option value="{{ f.id }}" {% if floor_filter == f.id|string %}selected{% endif %}>{{ f.name }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="category" class="form-select form-select-sm form-select-3d" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                {% for c in categories %}
+                <option value="{{ c.id }}" {% if category_filter == c.id|string %}selected{% endif %}>{{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+</div>
+
+<!-- Floor-Wise Room Layout -->
+{% for item in floors_with_rooms %}
+    {% if item.rooms %}
+    <div class="mb-5">
+        <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+            <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-layers-fill text-primary me-2"></i>{{ item.floor.name }}</h5>
+            <span class="badge bg-light text-secondary border small">{{ item.rooms|length }} Room(s)</span>
+            {% if item.floor.description %}<span class="text-muted small ms-2">&mdash; {{ item.floor.description }}</span>{% endif %}
+        </div>
+
+        <div class="room-grid">
+            {% for room in item.rooms %}
+            {% set active_stay = room.current_active_stay %}
+            {% set status_class = room.status.lower()|replace(' ', '') %}
+            <div class="room-card-3d status-{{ status_class }}">
+                <div>
+                    <div class="room-card-header">
+                        <div>
+                            <span class="room-number-badge font-mono">Room {{ room.room_number }}</span>
+                            <div class="text-muted small fw-semibold">{{ room.category.name }}</div>
+                        </div>
+                        <span class="badge-3d badge-3d-{{ 'success' if room.status == 'Available' else ('danger' if room.status == 'Occupied' else ('warning' if room.status == 'Reserved' else ('info' if room.status == 'Cleaning' else 'secondary'))) }}">
+                            {{ room.status }}
+                        </span>
+                    </div>
+
+                    <div class="room-card-body">
+                        <div class="d-flex align-items-center justify-content-between text-muted small">
+                            <span><i class="bi bi-tag me-1"></i>Rate:</span>
+                            <span class="fw-bold text-dark font-mono">₹{{ room.category.base_price }}/nt</span>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between text-muted small">
+                            <span><i class="bi bi-people me-1"></i>Max Occupancy:</span>
+                            <span class="fw-semibold text-dark">{{ room.max_occupancy }} Guests</span>
+                        </div>
+
+                        {% if room.status == 'Occupied' and active_stay %}
+                        <div class="mt-2 p-2 bg-danger-subtle rounded-3 border border-danger-subtle">
+                            <div class="fw-bold text-danger small"><i class="bi bi-person-fill me-1"></i>{{ active_stay.guest.full_name }}</div>
+                            <div class="small text-muted">Out: {{ active_stay.planned_checkout.strftime('%d %b, %H:%M') }}</div>
+                            {% if active_stay.is_overdue %}
+                            <div class="badge bg-danger text-white mt-1 small"><i class="bi bi-clock-history"></i> {{ active_stay.planned_checkout|overdue_text }}</div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        {% if room.notes %}
+                        <div class="small text-muted fst-italic mt-1 text-truncate" title="{{ room.notes }}">
+                            <i class="bi bi-info-circle me-1"></i>{{ room.notes }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Room Action Footer -->
+                <div class="d-flex align-items-center justify-content-between pt-2 border-top mt-2">
+                    <a href="{{ url_for('rooms.detail', room_id=room.id) }}" class="btn btn-sm btn-light border py-0 px-2 small">
+                        <i class="bi bi-eye"></i> Details
+                    </a>
+
+                    <div class="d-flex align-items-center gap-1">
+                        {% if room.status == 'Cleaning' %}
+                        <form method="POST" action="{{ url_for('rooms.mark_cleaned', room_id=room.id) }}" class="d-inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-sm btn-success py-0 px-2 fw-semibold" title="Mark Cleaned and Available">
+                                <i class="bi bi-check2-circle"></i> Cleaned
+                            </button>
+                        </form>
+                        {% elif room.status == 'Available' %}
+                        <a href="{{ url_for('bookings.new', category_id=room.category_id) }}" class="btn btn-sm btn-primary py-0 px-2" title="Walk-in Check-in">
+                            <i class="bi bi-person-plus"></i> Check-in
+                        </a>
+                        {% elif room.status == 'Occupied' and active_stay %}
+                        <a href="{{ url_for('checkin_out.process_checkout', booking_id=active_stay.booking_id) }}" class="btn btn-sm btn-danger py-0 px-2" title="Check-out">
+                            <i class="bi bi-box-arrow-right"></i> Check-out
+                        </a>
+                        {% endif %}
+
+                        <!-- Quick Status Modal Trigger -->
+                        <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" data-bs-toggle="modal" data-bs-target="#statusModal{{ room.id }}" title="Change Status">
+                            <i class="bi bi-gear"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Change Modal for this Room -->
+            <div class="modal fade" id="statusModal{{ room.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content card-3d">
+                        <div class="modal-header">
+                            <h5 class="modal-title fw-bold">Update Room {{ room.room_number }} Status</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="{{ url_for('rooms.update_status', room_id=room.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label class="form-label small fw-semibold">Select Operational Status</label>
+                                    <select name="status" class="form-select form-select-3d">
+                                        {% for code, label in RoomStatus.CHOICES %}
+                                        <option value="{{ code }}" {% if room.status == code %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-semibold">Housekeeping / Maintenance Remarks</label>
+                                    <textarea name="notes" class="form-control form-control-3d" rows="2" placeholder="e.g. AC servicing underway, deep sanitization required">{{ room.notes or '' }}</textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn-3d btn-3d-primary">Save Status</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+{% else %}
+<div class="card-3d p-5 text-center">
+    <i class="bi bi-door-closed fs-1 text-muted d-block mb-3"></i>
+    <h5 class="fw-bold">No rooms found matching the selected filters</h5>
+    <p class="text-muted">Try clearing your filters or create physical rooms.</p>
+</div>
+{% endfor %}
+{% endblock %}

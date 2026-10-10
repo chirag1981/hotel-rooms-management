@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+
+{% block title %}Operational Dashboard{% endblock %}
+
+{% block content %}
+<!-- Dashboard Header -->
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <div>
+        <h4 class="fw-bold mb-1 text-dark">Operations Overview</h4>
+        <p class="text-muted small mb-0">Live hotel occupancy, front desk operations, check-in and check-out monitoring</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <a href="{{ url_for('rooms.index') }}" class="btn-3d btn-3d-secondary">
+            <i class="bi bi-door-open text-secondary"></i> Rooms Grid
+        </a>
+        <a href="{{ url_for('bookings.new') }}" class="btn-3d btn-3d-primary">
+            <i class="bi bi-person-plus"></i> Walk-in Check-in
+        </a>
+    </div>
+</div>
+
+<!-- ==========================================
+     MODULE A: HOTEL MANAGEMENT METRICS
+     ========================================== -->
+<div class="d-flex align-items-center justify-content-between mb-2">
+    <h6 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+        <i class="bi bi-buildings-fill text-teal"></i> Hotel Rooms & Front Desk
+    </h6>
+    <span class="badge bg-light text-secondary border small">Total Capacity: {{ total_rooms }} Rooms</span>
+</div>
+
+<div class="row g-3 mb-3">
+    <!-- Total Rooms -->
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="stat-card-3d">
+            <div class="stat-info">
+                <span class="stat-label">Total Rooms</span>
+                <span class="stat-value">{{ total_rooms }}</span>
+                <span class="stat-sub">Active inventory</span>
+            </div>
+            <div class="stat-icon-3d stat-icon-navy">
+                <i class="bi bi-door-closed"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Available Rooms (Green) -->
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="stat-card-3d">
+            <div class="stat-info">
+                <span class="stat-label">Available</span>
+                <span class="stat-value text-success">{{ available_rooms }}</span>
+                <span class="stat-sub text-success">Ready for check-in</span>
+            </div>
+            <div class="stat-icon-3d stat-icon-available">
+                <i class="bi bi-check2-circle"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Occupied Rooms (Blue) -->
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="stat-card-3d">
+            <div class="stat-info">
+                <span class="stat-label">Occupied</span>
+                <span class="stat-value text-primary">{{ occupied_rooms }}</span>
+                <span class="stat-sub text-primary">In-house guests</span>
+            </div>
+            <div class="stat-icon-3d stat-icon-occupied">
+                <i class="bi bi-person-fill-lock"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reserved Rooms (Amber) -->
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="stat-card-3d">
+            <div class="stat-info">
+                <span class="stat-label">Reserved</span>
+                <span class="stat-value text-warning">{{ reserved_rooms }}</span>
+                <span class="stat-sub text-warning">Confirmed bookings</span>
+            </div>
+            <div class="stat-icon-3d stat-icon-reserved">
+                <i class="bi bi-calendar2-check"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cleaning & Maintenance (Purple / Gray) -->
+    <div class="col-6 col-md-4 col-xl-2">
+        <div class="stat-card-3d">
+            <div class="stat-info">
+                <span class="stat-label">Cleaning / Maint</span>
+                <span class="stat-value" style="color: var(--color-cleaning);">{{ cleaning_maintenance_rooms }}</span>
+                <span class="stat-sub text-muted">Housekeeping</span>
+            </div>
+            <div class="stat-icon-3d stat-icon-cleaning">
+                <i class="bi bi-stars"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overdue Check-outs (Subtle & Elegant Red Warning Card) -->
+    <div class="col-6 col-md-4 col-xl-2">
+        <a href="{{ url_for('checkin_out.overdue') }}" class="text-decoration-none">
+            <div class="stat-card-3d {% if overdue_checkouts_count > 0 %}stat-card-overdue{% endif %}">
+                <div class="stat-info">
+                    <span class="stat-label {% if overdue_checkouts_count > 0 %}text-danger{% endif %}">Overdue Stays</span>
+                    <span class="stat-value {% if overdue_checkouts_count > 0 %}text-danger{% endif %}">{{ overdue_checkouts_count }}</span>
+                    <span class="stat-sub {% if overdue_checkouts_count > 0 %}text-danger fw-semibold{% endif %}">
+                        {% if overdue_checkouts_count > 0 %}Action Needed{% else %}All on schedule{% endif %}
+                    </span>
+                </div>
+                <div class="stat-icon-3d {% if overdue_checkouts_count > 0 %}stat-icon-overdue{% else %}stat-icon-navy{% endif %}">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- Financial & Day's Movement Row -->
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="stat-card-3d">
+            <div class="stat-info">
+                <span class="stat-label">Today's Check-ins</span>
+                <span class="stat-value">{{ today_checkins_count }}</span>
+                <span class="stat-sub"><a href="{{ url_for('checkin_out.today_checkins') }}" class="text-decoration-none" style="color: var(--color-teal);">View arrivals &rarr;</a></span>
+            </div>
+            <div class="stat-icon-3d stat-icon-navy">
+                <i class="bi bi-box-arrow-in-right"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="stat-card-3d">
+            <div class="stat-info">
+                <span class="stat-label">Today's Check-outs</span>
+                <span class="stat-value">{{ today_checkouts_count }}</span>
+                <span class="stat-sub"><a href="{{ url_for('checkin_out.today_checkouts') }}" class="text-decoration-none" style="color: var(--color-teal);">View departures &rarr;</a></span>
+            </div>
+            <div class="stat-icon-3d stat-icon-teal">
+                <i class="bi bi-box-arrow-right"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="stat-card-3d">
+            <div class="stat-info">
+                <span class="stat-label">Today's Room Revenue</span>
+                <span class="stat-value text-success font-mono">{{ today_room_revenue|currency(settings.currency_symbol) }}</span>
+                <span class="stat-sub">Collections today</span>
+            </div>
+            <div class="stat-icon-3d stat-icon-available">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="stat-card-3d">
+            <div class="stat-info">
+                <span class="stat-label">Outstanding Balances</span>
+                <span class="stat-value text-danger font-mono">{{ outstanding_invoices|currency(settings.currency_symbol) }}</span>
+                <span class="stat-sub">Pending settlements</span>
+            </div>
+            <div class="stat-icon-3d stat-icon-overdue">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     OPERATIONAL LISTS & ACTION PANELS
+     ========================================== -->
+<div class="row g-3">
+    <!-- Today's Expected & Checked-in Guests -->
+    <div class="col-12 col-xl-6">
+        <div class="card-3d h-100">
+            <div class="card-header-3d py-2 px-3">
+                <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 0.88rem;">
+                    <i class="bi bi-box-arrow-in-right" style="color: var(--color-teal);"></i> Today's Check-ins
+                </h6>
+                <a href="{{ url_for('checkin_out.today_checkins') }}" class="btn btn-sm btn-light border py-0 px-2 text-muted" style="font-size: 0.72rem;">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover table-dashboard align-middle">
+                    <thead>
+                        <tr>
+                            <th style="min-width: 130px;">Booking Ref</th>
+                            <th>Guest Details</th>
+                            <th class="text-center">Room</th>
+                            <th class="text-center">Time</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in today_checkins %}
+                        <tr>
+                            <td class="text-nowrap">
+                                <span class="font-mono fw-bold" style="color: var(--color-teal); font-size: 0.8rem;">{{ b.booking_number }}</span>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark text-nowrap" style="font-size: 0.82rem;">{{ b.guest.full_name }}</div>
+                                <div class="text-muted text-nowrap" style="font-size: 0.72rem;"><i class="bi bi-telephone me-1"></i>{{ b.guest.mobile }}</div>
+                            </td>
+                            <td class="text-center text-nowrap">
+                                <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 0.72rem; font-weight: 600;">
+                                    {{ b.assigned_room_numbers|join(', ') if b.assigned_room_numbers else (b.room_category.name if b.room_category else 'Unassigned') }}
+                                </span>
+                            </td>
+                            <td class="text-center text-nowrap text-muted" style="font-size: 0.78rem;">
+                                {{ b.expected_checkin_time }}
+                            </td>
+                            <td class="text-center text-nowrap">
+                                <span class="badge-3d badge-3d-{{ 'available' if b.status == 'Checked In' else 'reserved' }}" style="font-size: 0.68rem; padding: 0.15rem 0.45rem;">
+                                    {{ b.status }}
+                                </span>
+                            </td>
+                            <td class="text-end text-nowrap">
+                                {% if b.status == 'Confirmed' %}
+                                <a href="{{ url_for('checkin_out.process_checkin', booking_id=b.id) }}" class="btn-action-compact btn-action-compact-green">
+                                    <i class="bi bi-box-arrow-in-right"></i> Check-in
+                                </a>
+                                {% else %}
+                                <a href="{{ url_for('bookings.detail', booking_id=b.id) }}" class="btn-action-compact btn-action-compact-light">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-3 small">No check-ins scheduled for today.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Expected & Processed Check-outs -->
+    <div class="col-12 col-xl-6">
+        <div class="card-3d h-100">
+            <div class="card-header-3d py-2 px-3">
+                <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 0.88rem;">
+                    <i class="bi bi-box-arrow-right" style="color: var(--color-teal);"></i> Today's Check-outs
+                </h6>
+                <a href="{{ url_for('checkin_out.today_checkouts') }}" class="btn btn-sm btn-light border py-0 px-2 text-muted" style="font-size: 0.72rem;">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover table-dashboard align-middle">
+                    <thead>
+                        <tr>
+                            <th style="min-width: 130px;">Booking Ref</th>
+                            <th>Guest Details</th>
+                            <th class="text-center">Room</th>
+                            <th class="text-center">Time</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in today_checkouts %}
+                        <tr>
+                            <td class="text-nowrap">
+                                <span class="font-mono fw-bold" style="color: var(--color-teal); font-size: 0.8rem;">{{ b.booking_number }}</span>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark text-nowrap" style="font-size: 0.82rem;">{{ b.guest.full_name }}</div>
+                                <div class="text-muted text-nowrap" style="font-size: 0.72rem;"><i class="bi bi-telephone me-1"></i>{{ b.guest.mobile }}</div>
+                            </td>
+                            <td class="text-center text-nowrap">
+                                <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 0.72rem; font-weight: 600;">
+                                    {{ b.assigned_room_numbers|join(', ') if b.assigned_room_numbers else (b.room_category.name if b.room_category else 'Unassigned') }}
+                                </span>
+                            </td>
+                            <td class="text-center text-nowrap text-muted" style="font-size: 0.78rem;">
+                                {{ b.expected_checkout_time }}
+                            </td>
+                            <td class="text-center text-nowrap">
+                                <span class="badge-3d badge-3d-{{ 'available' if b.status == 'Checked In' else ('secondary' if b.status == 'Checked Out' else 'reserved') }}" style="font-size: 0.68rem; padding: 0.15rem 0.45rem;">
+                                    {{ b.status }}
+                                </span>
+                            </td>
+                            <td class="text-end text-nowrap">
+                                {% if b.status == 'Checked In' %}
+                                <a href="{{ url_for('checkin_out.process_checkout', booking_id=b.id) }}" class="btn-action-compact btn-action-compact-green">
+                                    <i class="bi bi-box-arrow-right"></i> Check-out
+                                </a>
+                                {% else %}
+                                <a href="{{ url_for('bookings.detail', booking_id=b.id) }}" class="btn-action-compact btn-action-compact-light">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-3 small">No check-outs scheduled for today.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

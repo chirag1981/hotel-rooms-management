@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}Menu Management{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Restaurant Menu Management</h3>
+        <p class="text-muted small mb-0">Configure food categories, pricing, dishes, and vegetarian tags</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        {% if current_user.is_manager %}
+        <button type="button" class="btn-3d btn-3d-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#newCategoryModal">
+            <i class="bi bi-folder-plus"></i> Add Category
+        </button>
+        <button type="button" class="btn-3d btn-3d-primary btn-sm" data-bs-toggle="modal" data-bs-target="#newItemModal">
+            <i class="bi bi-plus-lg"></i> Add Dish / Item
+        </button>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Categories & Dishes Section -->
+{% for cat in categories %}
+<div class="card-3d mb-4">
+    <div class="card-header-3d">
+        <div class="d-flex align-items-center gap-2">
+            <h5 class="fw-bold mb-0 text-dark">{{ cat.name }}</h5>
+            <span class="badge bg-light text-secondary border small">{{ cat.items|length }} Item(s)</span>
+        </div>
+        <span class="text-muted small">{{ cat.description or '' }}</span>
+    </div>
+    <div class="table-responsive p-2">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light small text-muted">
+                <tr>
+                    <th>Type</th>
+                    <th>Dish / Item Name</th>
+                    <th>Description</th>
+                    <th class="text-end">Price (₹)</th>
+                    <th class="text-center">GST Rate</th>
+                    <th class="text-center">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cat.items %}
+                <tr>
+                    <td style="width: 80px;">
+                        {% if item.is_veg %}
+                        <span class="badge bg-success-subtle text-success border border-success px-2 py-1 small">&#9679; Veg</span>
+                        {% else %}
+                        <span class="badge bg-danger-subtle text-danger border border-danger px-2 py-1 small">&#9650; Non-Veg</span>
+                        {% endif %}
+                    </td>
+                    <td class="fw-bold text-dark">{{ item.name }}</td>
+                    <td class="text-muted small">{{ item.description or '-' }}</td>
+                    <td class="text-end font-mono fw-bold text-dark">₹ {{ item.price }}</td>
+                    <td class="text-center font-mono small">{{ item.tax_rate }}%</td>
+                    <td class="text-center">
+                        <span class="badge-3d badge-3d-{{ 'success' if item.is_available else 'secondary' }}">
+                            {{ 'Available' if item.is_available else 'Out of Stock' }}
+                        </span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-3">No dishes added to this category yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="card-3d p-5 text-center">
+    <i class="bi bi-journal-richtext fs-1 d-block mb-2 text-muted"></i>
+    <h5 class="fw-bold">No Menu Categories Created</h5>
+    <p class="text-muted">Click "Add Category" to start building your restaurant food menu.</p>
+</div>
+{% endfor %}
+
+<!-- New Category Modal -->
+<div class="modal fade" id="newCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card-3d">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Add Menu Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ url_for('restaurant.add_category') }}">
+                {{ cat_form.hidden_tag() }}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Category Name *</label>
+                        {{ cat_form.name(class="form-control form-control-3d", placeholder="e.g. Starters, Main Course, Beverages") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Description</label>
+                        {{ cat_form.description(class="form-control form-control-3d") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Display Order</label>
+                        {{ cat_form.sort_order(class="form-control form-control-3d") }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-3d btn-3d-primary">Save Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- New Menu Item Modal -->
+<div class="modal fade" id="newItemModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card-3d">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Add New Dish / Menu Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ url_for('restaurant.add_menu_item') }}">
+                {{ item_form.hidden_tag() }}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Menu Category *</label>
+                        {{ item_form.category_id(class="form-select form-select-3d") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Dish Name *</label>
+                        {{ item_form.name(class="form-control form-control-3d", placeholder="e.g. Paneer Butter Masala, Butter Naan") }}
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-semibold">Price (₹) *</label>
+                            {{ item_form.price(class="form-control form-control-3d font-mono") }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-semibold">GST Rate (%)</label>
+                            {{ item_form.tax_rate(class="form-control form-control-3d font-mono") }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Description / Ingredients</label>
+                        {{ item_form.description(class="form-control form-control-3d", rows="2") }}
+                    </div>
+                    <div class="d-flex gap-4">
+                        <div class="form-check">
+                            {{ item_form.is_veg(class="form-check-input") }}
+                            <label class="form-check-label small" for="is_veg">Pure Vegetarian</label>
+                        </div>
+                        <div class="form-check">
+                            {{ item_form.is_available(class="form-check-input") }}
+                            <label class="form-check-label small" for="is_available">Available for Orders</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-3d btn-3d-primary">Save Menu Dish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

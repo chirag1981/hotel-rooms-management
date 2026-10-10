@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block title %}Booking {{ booking.booking_number }}{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <div>
+        <a href="{{ url_for('bookings.index') }}" class="text-decoration-none text-muted small"><i class="bi bi-arrow-left"></i> Back to Reservations</a>
+        <h3 class="fw-bold mb-1 text-dark">Booking Ref: <span class="font-mono text-primary">{{ booking.booking_number }}</span></h3>
+        <p class="text-muted small mb-0">Created on {{ booking.created_at.strftime('%d %b %Y, %I:%M %p') }} &bull; Source: {{ booking.booking_source }}</p>
+    </div>
+    <div class="d-flex flex-wrap align-items-center gap-2">
+        {% if booking.status == 'Confirmed' %}
+        <a href="{{ url_for('checkin_out.process_checkin', booking_id=booking.id) }}" class="btn-3d btn-3d-success btn-sm">
+            <i class="bi bi-box-arrow-in-right"></i> Check-in Guest
+        </a>
+        <form method="POST" action="{{ url_for('bookings.cancel', booking_id=booking.id) }}" onsubmit="return confirm('Are you sure you want to cancel this booking?');" class="d-inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn-3d btn-3d-danger btn-sm">
+                <i class="bi bi-x-circle"></i> Cancel Booking
+            </button>
+        </form>
+        {% elif booking.status == 'Checked In' %}
+        <a href="{{ url_for('checkin_out.process_checkout', booking_id=booking.id) }}" class="btn-3d btn-3d-danger btn-sm">
+            <i class="bi bi-box-arrow-right"></i> Complete Check-out & Bill
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Left Column: Stay & Guest Card -->
+    <div class="col-lg-5">
+        <div class="card-3d p-4 mb-4">
+            <div class="d-flex align-items-center justify-content-between pb-3 border-bottom mb-3">
+                <h5 class="fw-bold mb-0 text-dark">Guest & Reservation</h5>
+                <span class="badge-3d badge-3d-{{ 'success' if booking.status == 'Checked In' else ('secondary' if booking.status == 'Checked Out' else ('primary' if booking.status == 'Confirmed' else 'danger')) }}">
+                    {{ booking.status }}
+                </span>
+            </div>
+
+            <div class="d-flex flex-column gap-3 small">
+                <div>
+                    <span class="text-muted d-block">Primary Guest:</span>
+                    <div class="fw-bold fs-6 text-dark">{{ booking.guest.full_name }}</div>
+                    <div class="text-muted"><i class="bi bi-telephone me-1"></i>{{ booking.guest.mobile }} | {{ booking.guest.email or 'No email' }}</div>
+                    <div class="text-muted"><i class="bi bi-card-heading me-1"></i>{{ booking.guest.id_type }}: {{ booking.guest.id_number or 'Verified' }}</div>
+                    {% if booking.guest.city %}<div class="text-muted"><i class="bi bi-geo-alt me-1"></i>{{ booking.guest.city }}, {{ booking.guest.country }}</div>{% endif %}
+                </div>
+
+                <div class="pt-2 border-top">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Stay Dates:</span>
+                        <span class="fw-bold">{{ booking.checkin_date.strftime('%d %b %Y') }} &rarr; {{ booking.checkout_date.strftime('%d %b %Y') }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1">
+                        <span class="text-muted">Duration:</span>
+                        <span class="fw-semibold">{{ booking.total_nights }} Night(s)</span>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1">
+                        <span class="text-muted">Occupants:</span>
+                        <span class="fw-semibold">{{ booking.adults_count }} Adult(s), {{ booking.children_count }} Child(ren)</span>
+                    </div>
+                </div>
+
+                <div class="pt-2 border-top">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Category:</span>
+                        <span class="fw-bold">{{ booking.room_category.name if booking.room_category else 'Standard' }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1">
+                        <span class="text-muted">Allocated Room(s):</span>
+                        <span class="fw-bold font-mono text-primary">{{ booking.assigned_room_numbers|join(', ') }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1">
+                        <span class="text-muted">Agreed Room Rate:</span>
+                        <span class="fw-bold font-mono">₹ {{ booking.agreed_rate_per_night }}/night</span>
+                    </div>
+                </div>
+
+                {% if booking.special_requests %}
+                <div class="pt-2 border-top">
+                    <span class="text-muted d-block mb-1">Special Requests:</span>
+                    <div class="p-2 bg-light rounded text-dark">{{ booking.special_requests }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Financial Summary Card -->
+        <div class="card-3d p-4">
+            <h6 class="fw-bold mb-3 text-dark d-flex align-items-center gap-2">
+                <i class="bi bi-wallet2 text-primary"></i> Financial Summary
+            </h6>
+            <div class="d-flex flex-column gap-2 small">
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Estimated Total:</span>
+                    <span class="fw-bold font-mono">₹ {{ booking.total_amount }}</span>
+                </div>
+                <div class="d-flex justify-content-between text-success">
+                    <span>Total Payments Received:</span>
+                    <span class="fw-bold font-mono">₹ {{ total_paid }}</span>
+                </div>
+                <div class="d-flex justify-content-between pt-2 border-top fs-6">
+                    <span class="fw-bold">Outstanding Balance:</span>
+                    <span class="fw-bold font-mono {% if balance > 0 %}text-danger{% else %}text-success{% endif %}">
+                        ₹ {{ balance }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Stay Timeline, Payments & Folio -->
+    <div class="col-lg-7">
+        <!-- Invoices List -->
+        {% if invoices %}
+        <div class="card-3d mb-4">
+            <div class="card-header-3d">
+                <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-receipt-cutoff me-2 text-primary"></i>Generated Invoices</h6>
+            </div>
+            <div class="table-responsive p-2">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr class="small text-muted">
+                            <th>Invoice #</th>
+                            <th>Date</th>
+                            <th>Grand Total</th>
+                            <th>Paid</th>
+                            <th>Balance</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for inv in invoices %}
+                        <tr>
+                            <td><span class="font-mono fw-bold">{{ inv.invoice_number }}</span></td>
+                            <td class="small">{{ inv.finalized_at.strftime('%d %b %Y') }}</td>
+                            <td class="font-mono fw-bold">₹ {{ inv.grand_total }}</td>
+                            <td class="font-mono text-success">₹ {{ inv.paid_amount }}</td>
+                            <td class="font-mono fw-bold {% if inv.balance_amount > 0 %}text-danger{% else %}text-success{% endif %}">₹ {{ inv.balance_amount }}</td>
+                            <td>
+                                <a href="{{ url_for('billing.view_invoice', invoice_id=inv.id) }}" class="btn btn-sm btn-outline-primary py-0 px-2">View & Print</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Posted Service & Amenity Charges (Folio) -->
+        <div class="card-3d mb-4">
+            <div class="card-header-3d">
+                <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-tag me-2 text-primary"></i>Posted Room Folio Charges (Services & Amenities)</h6>
+            </div>
+            <div class="table-responsive p-2">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr class="small text-muted">
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Posted At</th>
+                            <th>Billing Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fc in folio_charges %}
+                        <tr>
+                            <td><span class="badge bg-light text-dark border">{{ fc.charge_type|capitalize }}</span></td>
+                            <td>{{ fc.description }}</td>
+                            <td class="font-mono fw-bold text-dark">₹ {{ fc.amount }}</td>
+                            <td class="small text-muted">{{ fc.posted_at.strftime('%d %b, %H:%M') }}</td>
+                            <td>
+                                <span class="badge-3d badge-3d-{{ 'success' if fc.is_billed else 'warning' }}">
+                                    {{ 'Billed in Invoice' if fc.is_billed else 'Unbilled (Active)' }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-3">No additional room charges posted yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Payment History -->
+        <div class="card-3d">
+            <div class="card-header-3d">
+                <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-cash-stack me-2 text-success"></i>Payment Receipts</h6>
+            </div>
+            <div class="table-responsive p-2">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr class="small text-muted">
+                            <th>Receipt #</th>
+                            <th>Date</th>
+                            <th>Method</th>
+                            <th>Amount</th>
+                            <th>Ref</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in payments %}
+                        <tr>
+                            <td><span class="font-mono fw-bold text-dark">{{ p.receipt_number }}</span></td>
+                            <td class="small">{{ p.payment_date.strftime('%d %b %Y, %H:%M') }}</td>
+                            <td><span class="badge bg-light text-dark border">{{ p.payment_method }}</span></td>
+                            <td class="font-mono fw-bold text-success">₹ {{ p.amount }}</td>
+                            <td class="small text-muted">{{ p.transaction_ref or '-' }}</td>
+                            <td>
+                                <a href="{{ url_for('billing.print_receipt', payment_id=p.id) }}" target="_blank" class="btn btn-sm btn-light border py-0 px-2 small" title="Print Receipt">
+                                    <i class="bi bi-printer"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-3">No payments recorded yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

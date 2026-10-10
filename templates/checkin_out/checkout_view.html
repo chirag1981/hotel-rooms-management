@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Check-out & Finalize Bill - {{ booking.booking_number }}{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <div>
+        <a href="{{ url_for('bookings.detail', booking_id=booking.id) }}" class="text-decoration-none text-muted small"><i class="bi bi-arrow-left"></i> Back to Booking</a>
+        <h3 class="fw-bold mb-1 text-dark">Check-out & Final Settlement</h3>
+        <p class="text-muted small mb-0">Guest: <b>{{ booking.guest.full_name }}</b> &bull; Room(s): <span class="font-mono text-primary">{{ booking.assigned_room_numbers|join(', ') }}</span></p>
+    </div>
+</div>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <div class="row g-4">
+        <!-- Left Column: Itemized Stay Billing Breakdown -->
+        <div class="col-lg-7">
+            <div class="card-3d p-4 mb-4">
+                <div class="d-flex align-items-center justify-content-between pb-3 border-bottom mb-3">
+                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-receipt me-2 text-primary"></i>Itemized Bill Particulars</h5>
+                    <span class="badge bg-light text-secondary border font-mono">{{ calc.nights }} Billable Night(s)</span>
+                </div>
+
+                <!-- Stay Timestamps -->
+                <div class="row g-2 p-3 bg-light rounded-3 border mb-3 small">
+                    <div class="col-sm-6">
+                        <span class="text-muted d-block">Actual Check-in:</span>
+                        <span class="fw-bold">{{ stay.actual_checkin.strftime('%d %b %Y, %I:%M %p') if stay and stay.actual_checkin else booking.checkin_date.strftime('%d %b %Y') }}</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="text-muted d-block">Planned Departure:</span>
+                        <span class="fw-bold">{{ stay.planned_checkout.strftime('%d %b %Y, %I:%M %p') if stay and stay.planned_checkout else booking.checkout_date.strftime('%d %b %Y') }}</span>
+                    </div>
+                    {% if stay and stay.is_overdue %}
+                    <div class="col-12 mt-2">
+                        <div class="badge bg-danger-subtle text-danger border border-danger-subtle p-2 w-100 text-start">
+                            <i class="bi bi-clock-history me-1"></i> <b>Overdue Duration:</b> {{ stay.planned_checkout|overdue_text }} ({{ late_hours }} hours)
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Line Items Table -->
+                <div class="table-responsive mb-3">
+                    <table class="table table-sm align-middle">
+                        <thead class="table-light small text-muted">
+                            <tr>
+                                <th>Particulars</th>
+                                <th class="text-center">Qty / Nts</th>
+                                <th class="text-end">Rate (₹)</th>
+                                <th class="text-end">Tax (₹)</th>
+                                <th class="text-end">Total (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in calc.items %}
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold">{{ item.description }}</div>
+                                    <div class="text-muted small">{{ item.item_type|capitalize }}</div>
+                                </td>
+                                <td class="text-center font-mono">{{ item.quantity }}</td>
+                                <td class="text-end font-mono">₹ {{ item.unit_price }}</td>
+                                <td class="text-end font-mono text-muted">₹ {{ item.tax_amount }}</td>
+                                <td class="text-end font-mono fw-bold">₹ {{ item.total_price }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Totals Breakdown -->
+                <div class="p-3 bg-light rounded-3 border">
+                    <div class="d-flex justify-content-between mb-1 small">
+                        <span class="text-muted">Subtotal:</span>
+                        <span class="font-mono fw-bold">₹ {{ calc.subtotal }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1 small">
+                        <span class="text-muted">Taxes (GST):</span>
+                        <span class="font-mono text-muted">₹ {{ calc.tax_amount }}</span>
+                    </div>
+                    {% if calc.discount_amount > 0 %}
+                    <div class="d-flex justify-content-between mb-1 small text-danger">
+                        <span>Discount:</span>
+                        <span class="font-mono">- ₹ {{ calc.discount_amount }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="d-flex justify-content-between pt-2 border-top fs-5 fw-bold">
+                        <span>Grand Total:</span>
+                        <span class="font-mono text-dark">₹ {{ calc.grand_total }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1 text-success small">
+                        <span>Advance / Paid So Far:</span>
+                        <span class="font-mono fw-bold">- ₹ {{ calc.total_paid }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between pt-2 border-top fs-5 fw-bold text-danger">
+                        <span>Net Balance Payable:</span>
+                        <span class="font-mono">₹ {{ calc.balance_due }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Finalize & Settlement Form -->
+        <div class="col-lg-5">
+            <div class="card-3d p-4">
+                <h5 class="fw-bold mb-3 text-dark d-flex align-items-center gap-2">
+                    <i class="bi bi-wallet2 text-primary"></i> Settlement & Finalization
+                </h5>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold" for="payment_amount">{{ form.payment_amount.label.text }}</label>
+                    {{ form.payment_amount(class="form-control form-control-3d font-mono fs-5 text-success", value=calc.balance_due) }}
+                    <div class="form-text small">Pre-filled with net balance due. Modify if partial payment is permitted.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold" for="payment_method">{{ form.payment_method.label.text }}</label>
+                    {{ form.payment_method(class="form-select form-select-3d") }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold" for="transaction_ref">{{ form.transaction_ref.label.text }}</label>
+                    {{ form.transaction_ref(class="form-control form-control-3d", placeholder="e.g. Card Auth Code / UPI Ref") }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold" for="discount_amount">{{ form.discount_amount.label.text }}</label>
+                    {{ form.discount_amount(class="form-control form-control-3d font-mono") }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold" for="notes">{{ form.notes.label.text }}</label>
+                    {{ form.notes(class="form-control form-control-3d", rows="2", placeholder="Guest feedback, billing remarks...") }}
+                </div>
+
+                <div class="p-3 bg-warning-subtle rounded-3 border border-warning-subtle mb-4 small text-muted">
+                    <i class="bi bi-info-circle-fill text-warning me-1"></i>
+                    Upon check-out, the guest stay is marked completed, the immutable invoice is generated, and the physical room status is moved to <b>Cleaning</b> for housekeeping.
+                </div>
+
+                <div class="d-flex align-items-center justify-content-end gap-2">
+                    <a href="{{ url_for('bookings.detail', booking_id=booking.id) }}" class="btn-3d btn-3d-secondary">Cancel</a>
+                    <button type="submit" class="btn-3d btn-3d-danger py-2 px-4">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Finalize Invoice & Check-out</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

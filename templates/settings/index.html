@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Hotel Settings & Configuration{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Hotel Configuration & Policies</h3>
+        <p class="text-muted small mb-0">Update hotel profile, GSTIN, tax rates, checkout policies, and invoice settings</p>
+    </div>
+    {% if current_user.is_admin %}
+    <div class="d-flex align-items-center gap-2">
+        <a href="{{ url_for('settings.users') }}" class="btn-3d btn-3d-secondary btn-sm">
+            <i class="bi bi-people"></i> Staff Accounts
+        </a>
+        <a href="{{ url_for('settings.audit_logs') }}" class="btn-3d btn-3d-secondary btn-sm">
+            <i class="bi bi-shield-lock"></i> Audit Logs
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <div class="row g-4">
+        <!-- Hotel Identity -->
+        <div class="col-lg-6">
+            <div class="card-3d p-4 h-100">
+                <h5 class="fw-bold mb-3 text-dark d-flex align-items-center gap-2">
+                    <i class="bi bi-buildings-fill text-primary"></i> Hotel Information
+                </h5>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">{{ form.hotel_name.label.text }} *</label>
+                    {{ form.hotel_name(class="form-control form-control-3d") }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">{{ form.tagline.label.text }}</label>
+                    {{ form.tagline(class="form-control form-control-3d") }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">{{ form.address_line.label.text }}</label>
+                    {{ form.address_line(class="form-control form-control-3d") }}
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">{{ form.city.label.text }}</label>
+                        {{ form.city(class="form-control form-control-3d") }}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">{{ form.state.label.text }}</label>
+                        {{ form.state(class="form-control form-control-3d") }}
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">{{ form.pincode.label.text }}</label>
+                        {{ form.pincode(class="form-control form-control-3d") }}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">{{ form.country.label.text }}</label>
+                        {{ form.country(class="form-control form-control-3d") }}
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">{{ form.phone.label.text }}</label>
+                        {{ form.phone(class="form-control form-control-3d") }}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">{{ form.email.label.text }}</label>
+                        {{ form.email(class="form-control form-control-3d") }}
+                    </div>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label small fw-semibold">{{ form.gstin.label.text }}</label>
+                    {{ form.gstin(class="form-control form-control-3d font-mono") }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Taxes & Operational Policies -->
+        <div class="col-lg-6">
+            <div class="card-3d p-4 h-100">
+                <h5 class="fw-bold mb-3 text-dark d-flex align-items-center gap-2">
+                    <i class="bi bi-sliders text-primary"></i> Taxes & Operations Policy
+                </h5>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">{{ form.currency_symbol.label.text }}</label>
+                        {{ form.currency_symbol(class="form-control form-control-3d font-mono") }}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">{{ form.currency_code.label.text }}</label>
+                        {{ form.currency_code(class="form-control form-control-3d font-mono") }}
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">{{ form.standard_checkin_time.label.text }}</label>
+                        {{ form.standard_checkin_time(class="form-control form-control-3d") }}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">{{ form.standard_checkout_time.label.text }}</label>
+                        {{ form.standard_checkout_time(class="form-control form-control-3d") }}
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-sm-12">
+                        <label class="form-label small fw-semibold">{{ form.room_tax_rate.label.text }}</label>
+                        {{ form.room_tax_rate(class="form-control form-control-3d font-mono") }}
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">{{ form.early_checkin_fee.label.text }}</label>
+                        {{ form.early_checkin_fee(class="form-control form-control-3d font-mono") }}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">{{ form.late_checkout_hourly_fee.label.text }}</label>
+                        {{ form.late_checkout_hourly_fee(class="form-control form-control-3d font-mono") }}
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">{{ form.extra_bed_charge.label.text }}</label>
+                        {{ form.extra_bed_charge(class="form-control form-control-3d font-mono") }}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">{{ form.extra_person_charge.label.text }}</label>
+                        {{ form.extra_person_charge(class="form-control form-control-3d font-mono") }}
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-4">
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">{{ form.invoice_prefix.label.text }}</label>
+                        {{ form.invoice_prefix(class="form-control form-control-3d font-mono") }}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">{{ form.booking_prefix.label.text }}</label>
+                        {{ form.booking_prefix(class="form-control form-control-3d font-mono") }}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-3d btn-3d-primary w-100 py-2">
+                    <i class="bi bi-check-circle"></i> {{ form.submit.label.text }}
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Today's Check-ins{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Today's Check-ins</h3>
+        <p class="text-muted small mb-0">{{ today.strftime('%A, %d %B %Y') }} &bull; Expected arrivals and active check-ins</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <a href="{{ url_for('bookings.new') }}" class="btn-3d btn-3d-primary btn-sm">
+            <i class="bi bi-person-plus"></i> Walk-in Registration
+        </a>
+    </div>
+</div>
+
+<div class="card-3d">
+    <div class="table-responsive p-2">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr class="small text-muted">
+                    <th>Booking Ref</th>
+                    <th>Guest Name</th>
+                    <th>Mobile</th>
+                    <th>Category & Room</th>
+                    <th>Expected Time</th>
+                    <th>Total / Advance</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in checkins %}
+                <tr>
+                    <td><a href="{{ url_for('bookings.detail', booking_id=b.id) }}" class="font-mono fw-bold">{{ b.booking_number }}</a></td>
+                    <td class="fw-bold">{{ b.guest.full_name }}</td>
+                    <td>{{ b.guest.mobile }}</td>
+                    <td>
+                        <span class="badge bg-light text-dark border">
+                            {{ b.assigned_room_numbers|join(', ') if b.assigned_room_numbers else (b.room_category.name if b.room_category else 'Standard') }}
+                        </span>
+                    </td>
+                    <td class="small">{{ b.expected_checkin_time }}</td>
+                    <td class="small font-mono">
+                        <div>Tot: ₹{{ b.total_amount }}</div>
+                        <div class="text-success">Adv: ₹{{ b.advance_payment }}</div>
+                    </td>
+                    <td>
+                        <span class="badge-3d badge-3d-{{ 'success' if b.status == 'Checked In' else 'warning' }}">
+                            {{ b.status }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if b.status == 'Confirmed' %}
+                        <a href="{{ url_for('checkin_out.process_checkin', booking_id=b.id) }}" class="btn-3d btn-3d-success btn-sm py-1 px-3">
+                            <i class="bi bi-box-arrow-in-right"></i> Check-in
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('bookings.detail', booking_id=b.id) }}" class="btn btn-sm btn-light border py-0 px-2">View</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="text-center text-muted py-5">
+                        <i class="bi bi-check-circle fs-1 d-block mb-2 text-success"></i>
+                        No pending check-ins for today.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

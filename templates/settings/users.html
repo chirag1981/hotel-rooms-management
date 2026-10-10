@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Staff User Accounts{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Staff Accounts & System Access</h3>
+        <p class="text-muted small mb-0">Manage roles and permissions (Admin, Manager, Receptionist)</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <a href="{{ url_for('settings.add_user') }}" class="btn-3d btn-3d-primary btn-sm">
+            <i class="bi bi-person-plus"></i> Add Staff User
+        </a>
+    </div>
+</div>
+
+<div class="card-3d">
+    <div class="table-responsive p-2">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light small text-muted">
+                <tr>
+                    <th>Full Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Assigned Role</th>
+                    <th>Last Sign In</th>
+                    <th>Account Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td class="fw-bold text-dark">{{ u.full_name }}</td>
+                    <td class="font-mono text-primary">{{ u.username }}</td>
+                    <td class="small">{{ u.email }}</td>
+                    <td>
+                        <span class="badge-3d badge-3d-{{ 'primary' if u.role == 'admin' else ('info' if u.role == 'manager' else ('success' if u.role == 'receptionist' else 'warning')) }}">
+                            {{ u.role|replace('_', ' ')|capitalize }}
+                        </span>
+                    </td>
+                    <td class="small text-muted">{{ u.last_login.strftime('%d %b %Y, %H:%M') if u.last_login else 'Never' }}</td>
+                    <td>
+                        <span class="badge bg-{{ 'success' if u.is_active else 'secondary' }}-subtle text-{{ 'success' if u.is_active else 'secondary' }} py-1 px-2 small">
+                            {{ 'Active' if u.is_active else 'Deactivated' }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('settings.edit_user', user_id=u.id) }}" class="btn btn-sm btn-light border py-0 px-2 small">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

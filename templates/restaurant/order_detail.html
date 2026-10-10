@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Order {{ order.order_number }}{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <div>
+        <a href="{{ url_for('restaurant.orders') }}" class="text-decoration-none text-muted small"><i class="bi bi-arrow-left"></i> Back to Orders</a>
+        <h3 class="fw-bold mb-1 text-dark">Order: <span class="font-mono text-primary">{{ order.order_number }}</span></h3>
+        <p class="text-muted small mb-0">{{ order.created_at.strftime('%d %b %Y, %I:%M %p') }} &bull; Type: <b>{{ order.order_type }}</b></p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <a href="{{ url_for('restaurant.print_bill', order_id=order.id) }}" target="_blank" class="btn-3d btn-3d-secondary btn-sm">
+            <i class="bi bi-printer"></i> Print Restaurant Bill
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-7 col-lg-8">
+        <div class="card-3d p-4 mb-4">
+            <div class="d-flex align-items-center justify-content-between pb-3 border-bottom mb-3">
+                <h5 class="fw-bold mb-0 text-dark">Ordered Items</h5>
+                <span class="badge-3d badge-3d-{{ 'success' if order.payment_status == 'Paid' else ('primary' if order.payment_status == 'Posted to Room' else 'warning') }} fs-6">
+                    {{ order.payment_status }}
+                </span>
+            </div>
+
+            <div class="table-responsive mb-3">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small text-muted">
+                        <tr>
+                            <th>#</th>
+                            <th>Item Name</th>
+                            <th class="text-center">Qty</th>
+                            <th class="text-end">Price (₹)</th>
+                            <th class="text-end">Total (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items %}
+                        <tr>
+                            <td class="text-muted small">{{ loop.index }}</td>
+                            <td class="fw-bold text-dark">{{ item.item_name }}</td>
+                            <td class="text-center font-mono">{{ item.quantity }}</td>
+                            <td class="text-end font-mono">₹ {{ item.unit_price }}</td>
+                            <td class="text-end font-mono fw-bold">₹ {{ item.total_price }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-md-6">
+                    <div class="p-3 bg-light rounded-3 border small">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Subtotal:</span>
+                            <span class="font-mono fw-bold">₹ {{ order.subtotal }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">GST ({{ order.tax_rate }}%):</span>
+                            <span class="font-mono text-muted">₹ {{ order.tax_amount }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between pt-2 border-top fs-5 fw-bold text-dark">
+                            <span>Grand Total:</span>
+                            <span class="font-mono text-success">₹ {{ order.grand_total }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5 col-lg-4">
+        <div class="card-3d p-4">
+            <h5 class="fw-bold mb-3 text-dark">Order Information</h5>
+            
+            <div class="d-flex flex-column gap-3 small">
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Order Type:</span>
+                    <span class="fw-bold">{{ order.order_type }}</span>
+                </div>
+                {% if order.table %}
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Table:</span>
+                    <span class="fw-bold">Table {{ order.table.table_number }} ({{ order.table.section }})</span>
+                </div>
+                {% endif %}
+                {% if order.room %}
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Room Charged:</span>
+                    <span class="fw-bold font-mono text-primary">Room {{ order.room.room_number }}</span>
+                </div>
+                {% endif %}
+                {% if order.guest %}
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Guest:</span>
+                    <span class="fw-semibold">{{ order.guest.full_name }}</span>
+                </div>
+                {% endif %}
+                {% if order.customer_name %}
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Customer:</span>
+                    <span class="fw-semibold">{{ order.customer_name }}</span>
+                </div>
+                {% endif %}
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Billed By:</span>
+                    <span>{{ order.created_by.full_name if order.created_by else 'Front Desk' }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Payment Mode:</span>
+                    <span class="badge bg-light text-dark border">{{ order.payment_method or 'Pending Settlement' }}</span>
+                </div>
+            </div>
+
+            {% if order.payment_status == 'Pending' %}
+            <div class="pt-3 border-top mt-4">
+                <h6 class="fw-bold mb-2">Settle Payment Now</h6>
+                <form method="POST" action="{{ url_for('restaurant.pay_order', order_id=order.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="mb-3">
+                        <select name="payment_method" class="form-select form-select-3d">
+                            <option value="Cash">Cash</option>
+                            <option value="UPI / QR Code">UPI / QR Code</option>
+                            <option value="Card">Credit / Debit Card</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-3d btn-3d-success w-100">
+                        <i class="bi bi-check2-circle"></i> Settle & Mark Paid
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

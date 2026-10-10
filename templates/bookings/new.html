@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block title %}New Walk-in / Reservation{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <div>
+        <a href="{{ url_for('bookings.index') }}" class="text-decoration-none text-muted small"><i class="bi bi-arrow-left"></i> Back to Reservations</a>
+        <h3 class="fw-bold mb-1 text-dark">New Guest Booking & Registration</h3>
+        <p class="text-muted small mb-0">Create an advance booking or complete an instant walk-in check-in</p>
+    </div>
+</div>
+
+<form method="POST" id="bookingForm">
+    {{ form.hidden_tag() }}
+
+    <div class="row g-4">
+        <!-- Left Column: Guest Registration -->
+        <div class="col-lg-5">
+            <div class="card-3d p-4 h-100">
+                <h5 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-person-lines-fill text-primary"></i> Guest Information
+                </h5>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold" for="guest_id">{{ form.guest_id.label.text }}</label>
+                    {{ form.guest_id(class="form-select form-select-3d", id="guest_id_select") }}
+                </div>
+
+                <div id="newGuestSection" class="p-3 bg-light rounded-3 border mb-3">
+                    <div class="small fw-bold text-secondary mb-2">New Guest Particulars</div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold" for="new_guest_name">{{ form.new_guest_name.label.text }} *</label>
+                        {{ form.new_guest_name(class="form-control form-control-3d", placeholder="e.g. Rajesh Kumar") }}
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-semibold" for="new_guest_mobile">{{ form.new_guest_mobile.label.text }} *</label>
+                            {{ form.new_guest_mobile(class="form-control form-control-3d", placeholder="+91 98765 43210") }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-semibold" for="new_guest_email">{{ form.new_guest_email.label.text }}</label>
+                            {{ form.new_guest_email(class="form-control form-control-3d", placeholder="guest@example.com") }}
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-semibold" for="new_guest_id_type">{{ form.new_guest_id_type.label.text }}</label>
+                            {{ form.new_guest_id_type(class="form-select form-select-3d") }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-semibold" for="new_guest_id_number">{{ form.new_guest_id_number.label.text }}</label>
+                            {{ form.new_guest_id_number(class="form-control form-control-3d", placeholder="e.g. Aadhaar / Passport #") }}
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label small fw-semibold" for="new_guest_city">{{ form.new_guest_city.label.text }}</label>
+                        {{ form.new_guest_city(class="form-control form-control-3d", placeholder="City, State") }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold" for="booking_source">{{ form.booking_source.label.text }}</label>
+                    {{ form.booking_source(class="form-select form-select-3d") }}
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label small fw-semibold" for="special_requests">{{ form.special_requests.label.text }}</label>
+                    {{ form.special_requests(class="form-control form-control-3d", rows="2", placeholder="Ground floor preference, late arrival, non-smoking...") }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Stay & Pricing Allocation -->
+        <div class="col-lg-7">
+            <div class="card-3d p-4 h-100">
+                <h5 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-calendar2-range text-primary"></i> Room & Stay Allocation
+                </h5>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold" for="checkin_date">{{ form.checkin_date.label.text }} *</label>
+                        {{ form.checkin_date(class="form-control form-control-3d", id="checkin_date") }}
+                        {% if form.checkin_date.errors %}<div class="text-danger small mt-1">{{ form.checkin_date.errors[0] }}</div>{% endif %}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold" for="checkout_date">{{ form.checkout_date.label.text }} *</label>
+                        {{ form.checkout_date(class="form-control form-control-3d", id="checkout_date") }}
+                        {% if form.checkout_date.errors %}<div class="text-danger small mt-1">{{ form.checkout_date.errors[0] }}</div>{% endif %}
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold" for="expected_checkin_time">{{ form.expected_checkin_time.label.text }}</label>
+                        {{ form.expected_checkin_time(class="form-control form-control-3d") }}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold" for="expected_checkout_time">{{ form.expected_checkout_time.label.text }}</label>
+                        {{ form.expected_checkout_time(class="form-control form-control-3d") }}
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold" for="room_category_id">{{ form.room_category_id.label.text }} *</label>
+                        {{ form.room_category_id(class="form-select form-select-3d", id="room_category_id") }}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold" for="agreed_rate_per_night">{{ form.agreed_rate_per_night.label.text }} *</label>
+                        {{ form.agreed_rate_per_night(class="form-control form-control-3d font-mono", id="agreed_rate_per_night") }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <label class="form-label small fw-semibold mb-0" for="allocated_rooms">
+                            Allocate Room(s) *
+                        </label>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-light text-dark border small" id="selectedRoomsCountBadge">Selected: 0 room(s)</span>
+                            <button type="button" class="btn btn-link btn-sm p-0 text-muted small text-decoration-none" id="clearRoomsSelection">Clear</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Small Room Selection 3D Cards Grid -->
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="d-flex align-items-center justify-content-between mb-2 pb-2 border-bottom">
+                            <span class="small fw-bold text-secondary"><i class="bi bi-grid-3x3-gap-fill me-1"></i> Available Rooms</span>
+                            <span class="small text-muted" style="font-size: 0.75rem;">Click card to toggle selection</span>
+                        </div>
+
+                        {% if all_rooms %}
+                        <div class="room-alloc-grid" id="roomAllocGrid">
+                            {% for r in all_rooms %}
+                            <div class="room-alloc-item" data-category-id="{{ r.category_id }}" data-floor-id="{{ r.floor_id }}" data-status="{{ r.status }}">
+                                <input type="checkbox" 
+                                       name="allocated_rooms" 
+                                       value="{{ r.id }}" 
+                                       id="room_alloc_{{ r.id }}" 
+                                       class="room-selector-input d-none"
+                                       {% if form.allocated_rooms.data and (r.id in form.allocated_rooms.data or r.id|string in form.allocated_rooms.data) %}checked{% endif %}
+                                       {% if r.status != 'Available' %}disabled{% endif %}>
+                                
+                                <label for="room_alloc_{{ r.id }}" 
+                                       class="room-alloc-card-3d {% if r.status != 'Available' %}disabled-card{% endif %}" 
+                                       title="{% if r.status != 'Available' %}Room is currently {{ r.status }}{% else %}Click to allocate Room {{ r.room_number }}{% endif %}">
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <span class="room-alloc-num"><i class="bi bi-door-closed me-1"></i>{{ r.room_number }}</span>
+                                        <span class="badge-3d badge-3d-{{ 'success' if r.status == 'Available' else ('danger' if r.status == 'Occupied' else ('warning' if r.status == 'Reserved' else 'info')) }}" style="font-size: 0.65rem; padding: 0.15rem 0.45rem;">
+                                            {{ r.status }}
+                                        </span>
+                                    </div>
+                                    <div class="small text-muted text-truncate" style="font-size: 0.75rem;">{{ r.category.name }}</div>
+                                    <div class="small fw-semibold text-secondary" style="font-size: 0.72rem;">
+                                        <i class="bi bi-layers me-1"></i>{{ r.floor.name }}
+                                    </div>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center text-muted py-3 small">
+                            <i class="bi bi-info-circle me-1"></i> No active rooms configured in system.
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if form.allocated_rooms.errors %}
+                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-triangle-fill me-1"></i> {{ form.allocated_rooms.errors[0] }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold" for="adults_count">{{ form.adults_count.label.text }}</label>
+                        {{ form.adults_count(class="form-control form-control-3d") }}
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold" for="children_count">{{ form.children_count.label.text }}</label>
+                        {{ form.children_count(class="form-control form-control-3d") }}
+                    </div>
+                </div>
+
+                <div class="p-3 bg-light rounded-3 border mb-3">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="form-check">
+                            {{ form.has_extra_bed(class="form-check-input", id="has_extra_bed") }}
+                            <label class="form-check-label small fw-semibold" for="has_extra_bed">Add Extra Bed</label>
+                        </div>
+                        <div style="max-width: 160px;">
+                            {{ form.extra_bed_charge(class="form-control form-control-sm form-control-3d font-mono", placeholder="Extra Bed ₹") }}
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-semibold">Discount (₹)</label>
+                            {{ form.discount_amount(class="form-control form-control-sm form-control-3d font-mono") }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-semibold">Advance Deposit Paid (₹)</label>
+                            {{ form.advance_payment(class="form-control form-control-sm form-control-3d font-mono") }}
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <label class="form-label small fw-semibold">Advance Payment Method</label>
+                        {{ form.payment_method(class="form-select form-select-sm form-select-3d") }}
+                    </div>
+                </div>
+
+                <!-- Instant Walk-in Immediate Check-in Action -->
+                <div class="p-3 bg-primary-subtle rounded-3 border border-primary-subtle mb-4">
+                    <div class="form-check form-switch">
+                        {{ form.checkin_now(class="form-check-input", id="checkin_now_toggle") }}
+                        <label class="form-check-label fw-bold text-primary" for="checkin_now_toggle">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Check-in Immediately (Walk-in Guest)
+                        </label>
+                    </div>
+                    <div class="small text-muted mt-1">If enabled, the stay record is activated immediately, room status becomes 'Occupied', and keys are handed over.</div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-end gap-2">
+                    <a href="{{ url_for('bookings.index') }}" class="btn-3d btn-3d-secondary">Cancel</a>
+                    <button type="submit" class="btn-3d btn-3d-primary py-2 px-4">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Confirm & Register Booking</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Show/hide new guest fields when selecting existing guest
+        const guestSelect = document.getElementById('guest_id_select');
+        const newGuestSection = document.getElementById('newGuestSection');
+        if (guestSelect && newGuestSection) {
+            guestSelect.addEventListener('change', () => {
+                if (parseInt(guestSelect.value) > 0) {
+                    newGuestSection.style.display = 'none';
+                } else {
+                    newGuestSection.style.display = 'block';
+                }
+            });
+        }
+
+        // 2. Room Selection Count & Updates
+        const roomCheckboxes = document.querySelectorAll('.room-selector-input');
+        const countBadge = document.getElementById('selectedRoomsCountBadge');
+        const clearBtn = document.getElementById('clearRoomsSelection');
+
+        function updateSelectedRoomsCount() {
+            const checked = document.querySelectorAll('.room-selector-input:checked');
+            if (countBadge) {
+                countBadge.textContent = `Selected: ${checked.length} room(s)`;
+                if (checked.length > 0) {
+                    countBadge.className = 'badge bg-success text-white border small';
+                } else {
+                    countBadge.className = 'badge bg-light text-dark border small';
+                }
+            }
+        }
+
+        roomCheckboxes.forEach(cb => {
+            cb.addEventListener('change', updateSelectedRoomsCount);
+        });
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                roomCheckboxes.forEach(cb => cb.checked = false);
+                updateSelectedRoomsCount();
+            });
+        }
+
+        updateSelectedRoomsCount();
+
+        // 3. Auto-filter/highlight rooms matching chosen category
+        const categorySelect = document.getElementById('room_category_id');
+        const agreedRateInput = document.getElementById('agreed_rate_per_night');
+        const roomItems = document.querySelectorAll('.room-alloc-item');
+
+        if (categorySelect) {
+            categorySelect.addEventListener('change', () => {
+                const selectedCatId = categorySelect.value;
+                roomItems.forEach(item => {
+                    const catId = item.dataset.categoryId;
+                    const card = item.querySelector('.room-alloc-card-3d');
+                    if (selectedCatId && catId === selectedCatId) {
+                        card.style.borderColor = 'var(--color-primary)';
+                    } else {
+                        card.style.borderColor = '';
+                    }
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}
+

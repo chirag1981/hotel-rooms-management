@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Restaurant POS Terminal{% endblock %}
+
+{% block content %}
+<input type="hidden" id="posTaxRate" value="{{ settings.restaurant_tax_rate }}">
+
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
+            <i class="bi bi-cart3 text-success"></i> Restaurant POS & Billing Terminal
+        </h3>
+        <p class="text-muted small mb-0">Select dishes, manage tables, or post orders directly to hotel guest room folios</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <a href="{{ url_for('restaurant.tables') }}" class="btn-3d btn-3d-secondary btn-sm">
+            <i class="bi bi-table"></i> Table Grid
+        </a>
+        <a href="{{ url_for('restaurant.orders') }}" class="btn-3d btn-3d-secondary btn-sm">
+            <i class="bi bi-list-check"></i> Orders List
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Left Column: Menu Categories & Dishes Grid -->
+    <div class="col-lg-7 col-xl-8">
+        <!-- Category Filter Tabs -->
+        <div class="card-3d p-2 mb-3">
+            <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-sm btn-3d-primary cat-filter-btn active" data-cat-id="all">
+                    All Dishes
+                </button>
+                {% for cat in categories %}
+                <button type="button" class="btn btn-sm btn-3d-secondary cat-filter-btn" data-cat-id="{{ cat.id }}">
+                    {{ cat.name }}
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Dishes Grid -->
+        <div class="row g-3" id="menuItemsGrid">
+            {% for cat in categories %}
+                {% for item in cat.items %}
+                {% if item.is_available %}
+                <div class="col-sm-6 col-md-4 pos-menu-item" data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}" data-cat-id="{{ cat.id }}">
+                    <div class="card-3d p-3 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-start justify-content-between gap-1 mb-1">
+                                <h6 class="fw-bold text-dark mb-0">{{ item.name }}</h6>
+                                {% if item.is_veg %}
+                                <span class="badge bg-success-subtle text-success border border-success p-1 small" title="Vegetarian">&#9679; Veg</span>
+                                {% else %}
+                                <span class="badge bg-danger-subtle text-danger border border-danger p-1 small" title="Non-Veg">&#9650; Non-Veg</span>
+                                {% endif %}
+                            </div>
+                            <div class="text-muted small mb-2 text-truncate" title="{{ item.description }}">{{ item.description or cat.name }}</div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                            <span class="fs-5 fw-bold font-mono text-dark">₹{{ item.price }}</span>
+                            <button type="button" class="btn-3d btn-3d-primary btn-sm px-3 add-to-cart-btn">
+                                <i class="bi bi-plus-lg"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Right Column: Interactive Order Cart & Finalization -->
+    <div class="col-lg-5 col-xl-4">
+        <div class="card-3d p-4 sticky-top" style="top: 85px;">
+            <div class="d-flex align-items-center justify-content-between pb-3 border-bottom mb-3">
+                <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-bag-check me-2 text-primary"></i>Current Order</h5>
+                <span class="badge bg-light text-secondary border font-mono">GST: {{ settings.restaurant_tax_rate }}%</span>
+            </div>
+
+            <form method="POST" id="posOrderForm" action="{{ url_for('restaurant.pos') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="cart_items_json" id="cart_items_json" value="[]">
+
+                <!-- Order Type & Table Selection -->
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Order Type</label>
+                    <select name="order_type" id="order_type" class="form-select form-select-3d">
+                        <option value="Dine-In">Dine-In (Table Service)</option>
+                        <option value="Takeaway">Takeaway / Parcel</option>
+                        <option value="Room-Service">Room Service (Hotel Guest)</option>
+                    </select>
+                </div>
+
+                <div class="mb-3" id="tableSelectGroup">
+                    <label class="form-label small fw-semibold">Select Table</label>
+                    <select name="table_id" class="form-select form-select-3d">
+                        <option value="0">-- Select Table --</option>
+                        {% for t in tables %}
+                        <option value="{{ t.id }}" {% if request.args.get('table_id') == t.id|string %}selected{% endif %}>
+                            Table {{ t.table_number }} ({{ t.section }} - {{ t.status }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Active Hotel Guest Stay (For Room Folio posting) -->
+                <div class="mb-3" id="staySelectGroup" style="display: none;">
+                    <label class="form-label small fw-semibold text-primary">Select In-House Room / Guest</label>
+                    <select name="stay_id" class="form-select form-select-3d border-primary">
+                        <option value="0">-- Select Room --</option>
+                        {% for st in active_stays %}
+                        <option value="{{ st.id }}">
+                            Room {{ st.room.room_number }} &bull; {{ st.guest.full_name }} (Ref: {{ st.booking.booking_number }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-text small">This bill will be charged to the guest's folio and settled at hotel checkout.</div>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">Customer Name</label>
+                        <input type="text" name="customer_name" class="form-control form-control-sm form-control-3d" placeholder="Optional">
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label small fw-semibold">Customer Phone</label>
+                        <input type="text" name="customer_phone" class="form-control form-control-sm form-control-3d" placeholder="Optional">
+                    </div>
+                </div>
+
+                <!-- Dynamic Cart Items Container -->
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Order Items</label>
+                    <div id="cartItemsList" style="max-height: 250px; overflow-y: auto;">
+                        <!-- Injected dynamically via pos.js -->
+                    </div>
+                </div>
+
+                <!-- Totals Calculation Box -->
+                <div class="p-3 bg-light rounded-3 border mb-3 small">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted">Subtotal:</span>
+                        <span class="font-mono fw-bold" id="posSubtotal">₹ 0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted">GST ({{ settings.restaurant_tax_rate }}%):</span>
+                        <span class="font-mono text-muted" id="posTax">₹ 0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between pt-2 border-top fs-5 fw-bold text-dark">
+                        <span>Grand Total:</span>
+                        <span class="font-mono text-success" id="posGrandTotal">₹ 0.00</span>
+                    </div>
+                </div>
+
+                <!-- Payment Action -->
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Payment / Settlement Action</label>
+                    <select name="payment_action" id="payment_action" class="form-select form-select-3d">
+                        <option value="Paid">Collect Payment Now (Paid)</option>
+                        <option value="Pending">Keep Open (Pay After Meal)</option>
+                        <option value="PostToRoom">Post to Hotel Room Folio</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Payment Mode</label>
+                    <select name="payment_method" class="form-select form-select-3d">
+                        <option value="Cash">Cash</option>
+                        <option value="UPI / QR Code">UPI / QR Code (GPay/PhonePe)</option>
+                        <option value="Card">Credit / Debit Card</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-3d btn-3d-success w-100 py-2">
+                    <i class="bi bi-check2-circle"></i>
+                    <span>Place Order & Generate Bill</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/pos.js') }}"></script>
+{% endblock %}

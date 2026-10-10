@@ -1,0 +1,715 @@
+/* Custom Styling: Premium Navy (#142B4A) & Teal (#0D9488) Design System with Compact 3D Tactile Aesthetics */
+@import url('tokens.css');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* ==========================================================================
+   App Layout: Sidebar (Navy #142B4A) + Main Content (Slate #F8FAFC)
+   ========================================================================== */
+.app-wrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.app-sidebar {
+  width: 250px;
+  background: var(--bg-sidebar);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 2px 0 16px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  z-index: 100;
+  transition: var(--transition-smooth);
+}
+
+.sidebar-header {
+  padding: 1.25rem 1.15rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.brand-icon-3d {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, var(--color-teal), var(--color-teal-hover));
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 1.25rem;
+  box-shadow: 0 3px 8px rgba(13, 148, 136, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  transform: perspective(200px) translateZ(4px);
+}
+
+.brand-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #FFFFFF;
+  line-height: 1.2;
+}
+
+.brand-subtitle {
+  font-size: 0.68rem;
+  color: var(--text-sidebar-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sidebar-nav {
+  padding: 1rem 0.75rem 2rem 0.75rem;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 5px;
+}
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+.nav-section-title {
+  font-size: 0.64rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748B;
+  padding: 0.65rem 0.65rem 0.2rem 0.65rem;
+}
+
+.nav-item-3d {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.52rem 0.75rem;
+  border-radius: var(--radius-md);
+  color: #CBD5E1;
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 500;
+  transition: var(--transition-smooth);
+  border: 1px solid transparent;
+}
+
+.nav-item-3d i {
+  font-size: 1.05rem;
+  color: #94A3B8;
+  transition: var(--transition-smooth);
+  width: 18px;
+  text-align: center;
+}
+
+.nav-item-3d:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.05);
+  transform: translateX(3px);
+}
+
+.nav-item-3d:hover i {
+  color: var(--color-teal-light);
+}
+
+.nav-item-3d.active {
+  background: var(--color-teal);
+  color: #FFFFFF;
+  border-color: var(--color-teal);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.35);
+  font-weight: 600;
+}
+
+.nav-item-3d.active i {
+  color: #FFFFFF;
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+/* Top Navbar */
+.app-topbar {
+  height: 60px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-light);
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* ==========================================================================
+   3D Tactile Buttons
+   ========================================================================== */
+.btn-3d {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.95rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--transition-tactile);
+  position: relative;
+  user-select: none;
+}
+
+.btn-3d:active {
+  transform: translateY(2px);
+}
+
+.btn-3d-primary {
+  background: linear-gradient(180deg, var(--color-teal) 0%, var(--color-teal-hover) 100%);
+  color: #FFFFFF;
+  box-shadow: var(--btn-3d-primary);
+}
+.btn-3d-primary:hover {
+  background: linear-gradient(180deg, var(--color-teal-hover) 0%, var(--color-teal-dark) 100%);
+  color: #FFFFFF;
+}
+.btn-3d-primary:active {
+  box-shadow: var(--btn-3d-primary-active);
+}
+
+.btn-3d-success {
+  background: linear-gradient(180deg, #16A34A 0%, #15803D 100%);
+  color: #FFFFFF;
+  box-shadow: var(--btn-3d-success);
+}
+.btn-3d-success:hover {
+  background: linear-gradient(180deg, #15803D 0%, #166534 100%);
+  color: #FFFFFF;
+}
+.btn-3d-success:active {
+  box-shadow: var(--btn-3d-success-active);
+}
+
+.btn-3d-danger {
+  background: linear-gradient(180deg, #EF4444 0%, #DC2626 100%);
+  color: #FFFFFF;
+  box-shadow: var(--btn-3d-danger);
+}
+.btn-3d-danger:hover {
+  background: linear-gradient(180deg, #DC2626 0%, #B91C1C 100%);
+  color: #FFFFFF;
+}
+.btn-3d-danger:active {
+  box-shadow: var(--btn-3d-danger-active);
+}
+
+.btn-3d-secondary {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--btn-3d-secondary);
+}
+.btn-3d-secondary:hover {
+  background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
+  color: var(--color-teal);
+  border-color: #CBD5E1;
+}
+.btn-3d-secondary:active {
+  box-shadow: var(--btn-3d-secondary-active);
+}
+
+/* ==========================================================================
+   3D Cards & Containers
+   ========================================================================== */
+.card-3d {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-3d-card);
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-3d:hover {
+  box-shadow: var(--shadow-3d-card-hover);
+}
+
+.card-header-3d {
+  padding: 0.75rem 1rem;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Compact Table Styling for Dashboard */
+.table-dashboard {
+  font-size: 0.82rem;
+  margin-bottom: 0;
+}
+
+.table-dashboard th {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  background: #F8FAFC;
+  padding: 0.45rem 0.65rem;
+  border-bottom: 1px solid var(--border-light);
+  white-space: nowrap;
+}
+
+.table-dashboard td {
+  padding: 0.5rem 0.65rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #F1F5F9;
+  color: var(--text-primary);
+}
+
+.table-dashboard tr:last-child td {
+  border-bottom: none;
+}
+
+.btn-action-compact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.22rem 0.6rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 1.2;
+  transition: var(--transition-smooth);
+}
+
+.btn-action-compact-teal {
+  background: var(--color-teal);
+  color: #FFFFFF;
+  border: 1px solid var(--color-teal-dark);
+}
+.btn-action-compact-teal:hover {
+  background: var(--color-teal-hover);
+  color: #FFFFFF;
+}
+
+.btn-action-compact-green {
+  background: #16A34A;
+  color: #FFFFFF;
+  border: 1px solid #15803D;
+}
+.btn-action-compact-green:hover {
+  background: #15803D;
+  color: #FFFFFF;
+}
+
+.btn-action-compact-light {
+  background: #FFFFFF;
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+}
+.btn-action-compact-light:hover {
+  background: #F8FAFC;
+  color: var(--color-teal);
+  border-color: #CBD5E1;
+}
+
+
+/* ==========================================================================
+   3D Metric Stat Cards (Compact, Uniform & Elegant)
+   ========================================================================== */
+.stat-card-3d {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  padding: 0.85rem 1rem;
+  box-shadow: var(--shadow-3d-card);
+  transition: var(--transition-smooth);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  min-height: 92px;
+}
+
+.stat-card-3d:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-3d-card-hover);
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  gap: 0.15rem;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-value {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.15;
+}
+
+.stat-sub {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-icon-3d {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 2px 4px rgba(15, 23, 42, 0.05);
+}
+
+/* Status-aligned Metric Icon Variants */
+.stat-icon-available, .stat-icon-emerald {
+  background: var(--color-available-light);
+  color: var(--color-available-dark);
+}
+.stat-icon-occupied, .stat-icon-blue {
+  background: var(--color-occupied-light);
+  color: var(--color-occupied-dark);
+}
+.stat-icon-reserved, .stat-icon-amber {
+  background: var(--color-reserved-light);
+  color: var(--color-reserved-dark);
+}
+.stat-icon-cleaning, .stat-icon-purple {
+  background: var(--color-cleaning-light);
+  color: var(--color-cleaning-dark);
+}
+.stat-icon-overdue, .stat-icon-rose {
+  background: var(--color-overdue-light);
+  color: var(--color-overdue-dark);
+}
+.stat-icon-maintenance, .stat-icon-gray {
+  background: var(--color-maintenance-light);
+  color: var(--color-maintenance-dark);
+}
+.stat-icon-navy, .stat-icon-indigo {
+  background: #E2E8F0;
+  color: var(--color-navy);
+}
+.stat-icon-teal, .stat-icon-cyan {
+  background: var(--color-teal-light);
+  color: var(--color-teal-hover);
+}
+
+/* Subtle Overdue Check-out Card */
+.stat-card-overdue {
+  background: #FFF5F5 !important;
+  border: 1px solid var(--color-overdue-border) !important;
+}
+.stat-card-overdue .stat-label {
+  color: var(--color-overdue) !important;
+}
+.stat-card-overdue .stat-value {
+  color: var(--color-overdue) !important;
+}
+.stat-card-overdue .stat-sub {
+  color: var(--color-overdue-dark) !important;
+}
+
+/* ==========================================================================
+   3D Room Grid Cards
+   ========================================================================== */
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.room-card-3d {
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-3d-card);
+  padding: 1rem;
+  transition: var(--transition-smooth);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-top: 4px solid var(--border-light);
+}
+
+.room-card-3d:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-3d-card-hover);
+}
+
+.room-card-3d.status-available { border-top-color: var(--color-available); }
+.room-card-3d.status-occupied { border-top-color: var(--color-occupied); }
+.room-card-3d.status-reserved { border-top-color: var(--color-reserved); }
+.room-card-3d.status-cleaning { border-top-color: var(--color-cleaning); }
+.room-card-3d.status-maintenance { border-top-color: var(--color-maintenance); }
+.room-card-3d.status-outofservice { border-top-color: #334155; }
+
+.room-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.65rem;
+}
+
+.room-number-badge {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.room-card-body {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.75rem;
+}
+
+/* ==========================================================================
+   3D Restaurant Table Grid
+   ========================================================================== */
+.table-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.table-card-3d {
+  background: #FFFFFF;
+  border-radius: var(--radius-xl);
+  border: 2px solid var(--border-light);
+  padding: 1.15rem;
+  box-shadow: var(--shadow-3d-card);
+  transition: var(--transition-smooth);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.table-card-3d:hover {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-3d-card-hover);
+}
+
+.table-disc-3d {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #FFFFFF, #F8FAFC);
+  border: 3px solid var(--border-light);
+  box-shadow: 0 3px 6px rgba(15, 23, 42, 0.06), inset 0 2px 4px rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.05rem;
+  margin-bottom: 0.65rem;
+}
+
+.table-card-3d.status-available .table-disc-3d { border-color: var(--color-available); color: var(--color-available-dark); }
+.table-card-3d.status-occupied .table-disc-3d { border-color: var(--color-occupied); color: var(--color-occupied-dark); background: var(--color-occupied-light); }
+.table-card-3d.status-reserved .table-disc-3d { border-color: var(--color-reserved); color: var(--color-reserved-dark); background: var(--color-reserved-light); }
+.table-card-3d.status-cleaning .table-disc-3d { border-color: var(--color-cleaning); color: var(--color-cleaning-dark); background: var(--color-cleaning-light); }
+
+/* ==========================================================================
+   3D Badges & Status Pills (Consistent Colors)
+   ========================================================================== */
+.badge-3d {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 1px 3px rgba(15, 23, 42, 0.04);
+  text-transform: capitalize;
+}
+
+.badge-3d-available, .badge-3d-success { background: var(--color-available-light); color: var(--color-available-dark); border: 1px solid var(--color-available-border); }
+.badge-3d-occupied, .badge-3d-info { background: var(--color-occupied-light); color: var(--color-occupied-dark); border: 1px solid var(--color-occupied-border); }
+.badge-3d-reserved, .badge-3d-warning { background: var(--color-reserved-light); color: var(--color-reserved-dark); border: 1px solid var(--color-reserved-border); }
+.badge-3d-cleaning, .badge-3d-purple { background: var(--color-cleaning-light); color: var(--color-cleaning-dark); border: 1px solid var(--color-cleaning-border); }
+.badge-3d-overdue, .badge-3d-danger { background: var(--color-overdue-light); color: var(--color-overdue-dark); border: 1px solid var(--color-overdue-border); }
+.badge-3d-maintenance, .badge-3d-secondary { background: var(--color-maintenance-light); color: var(--color-maintenance-dark); border: 1px solid var(--color-maintenance-border); }
+.badge-3d-primary { background: var(--color-teal-light); color: var(--color-teal-dark); border: 1px solid #99F6E4; }
+
+/* ==========================================================================
+   3D Small Room Allocation Cards (Booking Form)
+   ========================================================================== */
+.room-alloc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.65rem;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 0.35rem 0.15rem;
+}
+
+.room-alloc-card-3d {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #FFFFFF;
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 0.6rem 0.7rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: var(--transition-smooth);
+  cursor: pointer;
+  user-select: none;
+  min-height: 80px;
+}
+
+.room-alloc-card-3d:hover {
+  border-color: var(--color-teal);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(13, 148, 136, 0.15);
+}
+
+.room-selector-input:checked + .room-alloc-card-3d {
+  border-color: var(--color-teal);
+  background: linear-gradient(135deg, var(--color-teal-light), #FFFFFF);
+  box-shadow: 0 3px 0 var(--color-teal-dark), 0 4px 10px var(--color-teal-glow);
+  transform: translateY(-2px);
+}
+
+.room-selector-input:checked + .room-alloc-card-3d .room-alloc-num {
+  color: var(--color-teal-dark);
+  font-weight: 800;
+}
+
+.room-alloc-card-3d.disabled-card {
+  opacity: 0.55;
+  background: #F8FAFC;
+  cursor: not-allowed;
+}
+
+.room-alloc-num {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* ==========================================================================
+   Form Controls (3D Tactile Inset)
+   ========================================================================== */
+.form-control-3d, .form-select-3d {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 0.55rem 0.85rem;
+  font-size: 0.88rem;
+  background-color: #FFFFFF;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-3d-inset);
+  transition: var(--transition-smooth);
+}
+
+.form-control-3d:focus, .form-select-3d:focus {
+  border-color: var(--color-teal);
+  box-shadow: 0 0 0 3px var(--color-teal-light), inset 0 1px 2px rgba(15, 23, 42, 0.04);
+  outline: none;
+}
+
+/* ==========================================================================
+   Print & Responsive Styles
+   ========================================================================== */
+@media print {
+  .app-sidebar, .app-topbar, .btn-3d, .no-print {
+    display: none !important;
+  }
+  body, .app-main, .app-wrapper {
+    background: #FFFFFF !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .card-3d {
+    box-shadow: none !important;
+    border: 1px solid #E2E8F0 !important;
+  }
+}
+
+@media (max-width: 992px) {
+  .app-sidebar {
+    position: fixed;
+    left: -250px;
+    top: 0;
+    bottom: 0;
+  }
+  .app-sidebar.show {
+    left: 0;
+  }
+}

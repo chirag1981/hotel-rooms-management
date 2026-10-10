@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Restaurant Table Layout{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <div>
+        <h3 class="fw-bold mb-1 text-dark">Restaurant Dining Layout</h3>
+        <p class="text-muted small mb-0">Visual 3D table grid, seating capacity, and real-time dining status</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <a href="{{ url_for('restaurant.pos') }}" class="btn-3d btn-3d-success btn-sm">
+            <i class="bi bi-cart3"></i> Open POS Terminal
+        </a>
+        <a href="{{ url_for('restaurant.reservations') }}" class="btn-3d btn-3d-secondary btn-sm">
+            <i class="bi bi-bookmark-check"></i> Reservations
+        </a>
+        {% if current_user.is_manager %}
+        <a href="{{ url_for('restaurant.add_table') }}" class="btn-3d btn-3d-primary btn-sm">
+            <i class="bi bi-plus-lg"></i> Add Table
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Status Filter Pills & Section Filter -->
+<div class="card-3d p-3 mb-4">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ url_for('restaurant.tables', section=section_filter) }}" class="btn btn-sm {% if not status_filter %}btn-primary{% else %}btn-light border{% endif %} rounded-pill px-3">
+                All Tables ({{ status_counts.total }})
+            </a>
+            <a href="{{ url_for('restaurant.tables', status=TableStatus.AVAILABLE, section=section_filter) }}" class="btn btn-sm {% if status_filter == TableStatus.AVAILABLE %}btn-success text-white{% else %}btn-light border{% endif %} rounded-pill px-3">
+                <i class="bi bi-circle-fill text-success small me-1"></i> Available ({{ status_counts.available }})
+            </a>
+            <a href="{{ url_for('restaurant.tables', status=TableStatus.OCCUPIED, section=section_filter) }}" class="btn btn-sm {% if status_filter == TableStatus.OCCUPIED %}btn-danger text-white{% else %}btn-light border{% endif %} rounded-pill px-3">
+                <i class="bi bi-circle-fill text-danger small me-1"></i> Occupied ({{ status_counts.occupied }})
+            </a>
+            <a href="{{ url_for('restaurant.tables', status=TableStatus.RESERVED, section=section_filter) }}" class="btn btn-sm {% if status_filter == TableStatus.RESERVED %}btn-warning text-dark{% else %}btn-light border{% endif %} rounded-pill px-3">
+                <i class="bi bi-circle-fill text-warning small me-1"></i> Reserved ({{ status_counts.reserved }})
+            </a>
+            <a href="{{ url_for('restaurant.tables', status=TableStatus.CLEANING, section=section_filter) }}" class="btn btn-sm {% if status_filter == TableStatus.CLEANING %}btn-info text-white{% else %}btn-light border{% endif %} rounded-pill px-3">
+                <i class="bi bi-stars text-info small me-1"></i> Cleaning ({{ status_counts.cleaning }})
+            </a>
+        </div>
+
+        <!-- Section Dropdown -->
+        <form method="GET" class="d-flex align-items-center gap-2">
+            {% if status_filter %}<input type="hidden" name="status" value="{{ status_filter }}">{% endif %}
+            <select name="section" class="form-select form-select-sm form-select-3d" onchange="this.form.submit()">
+                <option value="">All Dining Sections</option>
+                {% for sec in sections %}
+                <option value="{{ sec }}" {% if section_filter == sec %}selected{% endif %}>{{ sec }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+</div>
+
+<!-- 3D Table Grid -->
+<div class="table-grid mb-4">
+    {% for table in tables %}
+    {% set status_class = table.status.lower()|replace(' ', '') %}
+    <div class="table-card-3d status-{{ status_class }}">
+        <div class="table-disc-3d font-mono">
+            T-{{ table.table_number }}
+        </div>
+
+        <h6 class="fw-bold text-dark mb-1">Table {{ table.table_number }}</h6>
+        <div class="text-muted small mb-2"><i class="bi bi-geo-alt me-1"></i>{{ table.section }}</div>
+
+        <div class="badge bg-light text-dark border mb-3 small">
+            <i class="bi bi-people-fill text-primary me-1"></i>{{ table.capacity }} Seats
+        </div>
+
+        <div class="mb-3">
+            <span class="badge-3d badge-3d-{{ 'success' if table.status == 'Available' else ('danger' if table.status == 'Occupied' else ('warning' if table.status == 'Reserved' else 'info')) }}">
+                {{ table.status }}
+            </span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex align-items-center gap-1 w-100 justify-content-center pt-2 border-top">
+            {% if table.status == 'Available' %}
+            <a href="{{ url_for('restaurant.pos', table_id=table.id) }}" class="btn btn-sm btn-primary py-0 px-2 small">
+                <i class="bi bi-plus-lg"></i> Take Order
+            </a>
+            {% elif table.status == 'Cleaning' %}
+            <form method="POST" action="{{ url_for('restaurant.set_table_status', table_id=table.id) }}" class="d-inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="status" value="Available">
+                <button type="submit" class="btn btn-sm btn-success py-0 px-2 fw-semibold">
+                    <i class="bi bi-check-circle"></i> Cleaned
+                </button>
+            </form>
+            {% endif %}
+
+            <!-- Table Status Dropdown Menu -->
+            <div class="dropdown">
+                <button class="btn btn-sm btn-light border py-0 px-2 dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-gear"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border small">
+                    <li class="dropdown-header">Change Status</li>
+                    {% for code, label in TableStatus.CHOICES %}
+                    <li>
+                        <form method="POST" action="{{ url_for('restaurant.set_table_status', table_id=table.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="status" value="{{ code }}">
+                            <button type="submit" class="dropdown-item {% if table.status == code %}active{% endif %}">{{ label }}</button>
+                        </form>
+                    </li>
+                    {% endfor %}
+                    {% if current_user.is_manager %}
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{ url_for('restaurant.edit_table', table_id=table.id) }}"><i class="bi bi-pencil me-1"></i> Edit Table</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center py-5">
+        <i class="bi bi-table fs-1 d-block mb-2 text-muted"></i>
+        <h5 class="fw-bold text-dark">No dining tables found</h5>
+        <p class="text-muted">Add tables to start managing restaurant seating.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

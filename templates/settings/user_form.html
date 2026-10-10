@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-5">
+        <div class="card-3d">
+            <div class="card-header-3d">
+                <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-person-fill-gear me-2 text-primary"></i>{{ title }}</h5>
+            </div>
+            <div class="p-4">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold" for="full_name">{{ form.full_name.label.text }} *</label>
+                        {{ form.full_name(class="form-control form-control-3d") }}
+                        {% if form.full_name.errors %}<div class="text-danger small mt-1">{{ form.full_name.errors[0] }}</div>{% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold" for="username">{{ form.username.label.text }} *</label>
+                        {{ form.username(class="form-control form-control-3d font-mono") }}
+                        {% if form.username.errors %}<div class="text-danger small mt-1">{{ form.username.errors[0] }}</div>{% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold" for="email">{{ form.email.label.text }} *</label>
+                        {{ form.email(class="form-control form-control-3d") }}
+                        {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors[0] }}</div>{% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold" for="role">{{ form.role.label.text }} *</label>
+                        {{ form.role(class="form-select form-select-3d") }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold" for="password">{{ form.password.label.text }}</label>
+                        {{ form.password(class="form-control form-control-3d", placeholder="Enter password") }}
+                    </div>
+
+                    <div class="form-check mb-4">
+                        {{ form.is_active(class="form-check-input") }}
+                        <label class="form-check-label small" for="is_active">Account is Active</label>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="submit" class="btn-3d btn-3d-primary">
+                            <i class="bi bi-check-lg"></i> {{ form.submit.label.text }}
+                        </button>
+                        <a href="{{ url_for('settings.users') }}" class="btn-3d btn-3d-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

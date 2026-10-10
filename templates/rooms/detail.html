@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Room {{ room.room_number }} Details{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <div>
+        <a href="{{ url_for('rooms.index') }}" class="text-decoration-none text-muted small"><i class="bi bi-arrow-left"></i> Back to Rooms</a>
+        <h3 class="fw-bold mb-1 text-dark">Room {{ room.room_number }} Details</h3>
+        <p class="text-muted small mb-0">{{ room.floor.name }} &bull; {{ room.category.name }}</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        {% if current_user.is_manager %}
+        <a href="{{ url_for('rooms.edit', room_id=room.id) }}" class="btn-3d btn-3d-secondary btn-sm">
+            <i class="bi bi-pencil"></i> Edit Room
+        </a>
+        {% endif %}
+        {% if room.status == 'Cleaning' %}
+        <form method="POST" action="{{ url_for('rooms.mark_cleaned', room_id=room.id) }}" class="d-inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn-3d btn-3d-success btn-sm">
+                <i class="bi bi-check-circle"></i> Mark Cleaned
+            </button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-5 col-lg-4">
+        <div class="card-3d p-4">
+            <div class="text-center pb-3 border-bottom mb-3">
+                <div class="display-5 fw-bold font-mono text-dark">Room {{ room.room_number }}</div>
+                <div class="badge-3d badge-3d-{{ 'success' if room.status == 'Available' else ('danger' if room.status == 'Occupied' else ('warning' if room.status == 'Reserved' else 'info')) }} mt-2 fs-6">
+                    {{ room.status }}
+                </div>
+            </div>
+
+            <div class="d-flex flex-column gap-3 small">
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Floor:</span>
+                    <span class="fw-bold">{{ room.floor.name }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Category:</span>
+                    <span class="fw-bold">{{ room.category.name }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Nightly Rate:</span>
+                    <span class="fw-bold font-mono text-primary">₹ {{ room.category.base_price }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Max Occupancy:</span>
+                    <span class="fw-bold">{{ room.max_occupancy }} Guests</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Bed Type:</span>
+                    <span class="fw-bold">{{ room.category.bed_count }}x {{ room.category.bed_type }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Air Conditioning:</span>
+                    <span class="fw-bold">{{ 'Yes (AC)' if room.category.is_ac else 'Non-AC' }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Amenities:</span>
+                    <span class="fw-semibold text-end">{{ room.category.amenities }}</span>
+                </div>
+                {% if room.notes %}
+                <div class="mt-2 pt-2 border-top">
+                    <span class="text-muted d-block mb-1">Notes:</span>
+                    <div class="p-2 bg-light rounded text-dark">{{ room.notes }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7 col-lg-8">
+        <!-- Current Active Stay Panel -->
+        {% if active_stay %}
+        <div class="card-3d p-4 mb-4 border-danger">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h5 class="fw-bold text-danger mb-0"><i class="bi bi-person-fill-lock me-2"></i>Current In-House Guest</h5>
+                <a href="{{ url_for('checkin_out.process_checkout', booking_id=active_stay.booking_id) }}" class="btn-3d btn-3d-danger btn-sm">
+                    <i class="bi bi-box-arrow-right"></i> Check-out & Settle
+                </a>
+            </div>
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <div class="text-muted small">Guest Name:</div>
+                    <div class="fw-bold fs-6">{{ active_stay.guest.full_name }}</div>
+                    <div class="text-muted small">{{ active_stay.guest.mobile }} | {{ active_stay.guest.email or 'No email' }}</div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-muted small">Booking Ref:</div>
+                    <div class="font-mono fw-bold text-primary">
+                        <a href="{{ url_for('bookings.detail', booking_id=active_stay.booking_id) }}">{{ active_stay.booking.booking_number }}</a>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-muted small">Actual Check-in:</div>
+                    <div class="fw-semibold">{{ active_stay.actual_checkin.strftime('%d %b %Y, %I:%M %p') }}</div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-muted small">Planned Check-out:</div>
+                    <div class="fw-semibold">{{ active_stay.planned_checkout.strftime('%d %b %Y, %I:%M %p') }}</div>
+                    {% if active_stay.is_overdue %}
+                    <span class="badge bg-danger mt-1">{{ active_stay.planned_checkout|overdue_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Recent Stay History -->
+        <div class="card-3d">
+            <div class="card-header-3d">
+                <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-clock-history me-2 text-primary"></i>Stay History for Room {{ room.room_number }}</h6>
+            </div>
+            <div class="table-responsive p-2">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr class="small text-muted">
+                            <th>Booking Ref</th>
+                            <th>Guest</th>
+                            <th>Check-in</th>
+                            <th>Check-out</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for st in recent_stays %}
+                        <tr>
+                            <td><a href="{{ url_for('bookings.detail', booking_id=st.booking_id) }}" class="font-mono fw-semibold">{{ st.booking.booking_number }}</a></td>
+                            <td class="fw-semibold">{{ st.guest.full_name }}</td>
+                            <td class="small">{{ st.actual_checkin.strftime('%d %b %Y, %H:%M') if st.actual_checkin else st.planned_checkin.strftime('%d %b %Y') }}</td>
+                            <td class="small">{{ st.actual_checkout.strftime('%d %b %Y, %H:%M') if st.actual_checkout else st.planned_checkout.strftime('%d %b %Y') }}</td>
+                            <td><span class="badge-3d badge-3d-{{ 'success' if st.status == 'Active' else 'secondary' }}">{{ st.status }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">No past stays recorded for this room.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

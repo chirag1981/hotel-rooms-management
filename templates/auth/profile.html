@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card-3d">
+            <div class="card-header-3d">
+                <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-person-badge me-2 text-primary"></i>User Profile & Password</h5>
+            </div>
+            <div class="p-4">
+                <div class="d-flex align-items-center gap-3 mb-4 p-3 bg-light rounded-3 border">
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-4" style="width: 54px; height: 54px;">
+                        {{ current_user.full_name[:2].upper() }}
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-1">{{ current_user.full_name }}</h5>
+                        <div class="text-muted small">Username: <b>{{ current_user.username }}</b> | Role: <span class="badge bg-primary-subtle text-primary">{{ current_user.role|capitalize }}</span></div>
+                        <div class="text-muted small">Email: {{ current_user.email }}</div>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold mb-3">Change Account Password</h6>
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold" for="current_password">{{ form.current_password.label.text }}</label>
+                        {{ form.current_password(class="form-control form-control-3d") }}
+                        {% if form.current_password.errors %}
+                            <div class="text-danger small mt-1">{{ form.current_password.errors[0] }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-semibold" for="new_password">{{ form.new_password.label.text }}</label>
+                        {{ form.new_password(class="form-control form-control-3d") }}
+                        {% if form.new_password.errors %}
+                            <div class="text-danger small mt-1">{{ form.new_password.errors[0] }}</div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn-3d btn-3d-primary">
+                        <i class="bi bi-shield-check"></i>
+                        <span>Update Password</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,125 @@
+/* Design Tokens: Premium Navy & Teal System (Navy #142B4A, Teal #0D9488, Slate #F8FAFC, Cards #FFFFFF) */
+:root {
+  /* Core Brand Colors */
+  --color-navy: #142B4A;
+  --color-navy-dark: #0D1E35;
+  --color-navy-light: #1E3A61;
+  
+  --color-teal: #0D9488;
+  --color-teal-hover: #0F766E;
+  --color-teal-dark: #115E59;
+  --color-teal-light: #CCFBF1;
+  --color-teal-glow: rgba(13, 148, 136, 0.28);
+
+  /* Surfaces & Backgrounds */
+  --bg-app: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-surface-alt: #F1F5F9;
+  --bg-surface-glass: rgba(255, 255, 255, 0.92);
+  --bg-sidebar: #142B4A;
+  
+  /* Borders */
+  --border-light: #E2E8F0;
+  --border-subtle: #EDF2F7;
+  --border-highlight: rgba(255, 255, 255, 0.95);
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Fira Code', 'Consolas', monospace;
+
+  /* Text Colors */
+  --text-primary: #1E293B;
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
+  --text-inverse: #FFFFFF;
+  --text-sidebar-muted: #94A3B8;
+
+  /* Primary Brand (Teal #0D9488 for actions, Navy #142B4A for headers) */
+  --color-primary: #0D9488;
+  --color-primary-hover: #0F766E;
+  --color-primary-dark: #115E59;
+  --color-primary-light: #CCFBF1;
+  --color-primary-glow: rgba(13, 148, 136, 0.28);
+
+  /* Meaningful Status Colors */
+  --color-available: #16A34A;
+  --color-available-dark: #15803D;
+  --color-available-light: #DCFCE7;
+  --color-available-border: #BBF7D0;
+
+  --color-occupied: #2563EB;
+  --color-occupied-dark: #1D4ED8;
+  --color-occupied-light: #DBEAFE;
+  --color-occupied-border: #BFDBFE;
+
+  --color-reserved: #D97706;
+  --color-reserved-dark: #B45309;
+  --color-reserved-light: #FEF3C7;
+  --color-reserved-border: #FDE68A;
+
+  --color-cleaning: #9333EA;
+  --color-cleaning-dark: #7E22CE;
+  --color-cleaning-light: #F3E8FF;
+  --color-cleaning-border: #E9D5FF;
+
+  --color-overdue: #DC2626;
+  --color-overdue-dark: #B91C1C;
+  --color-overdue-light: #FEE2E2;
+  --color-overdue-border: #FECDD3;
+
+  --color-maintenance: #64748B;
+  --color-maintenance-dark: #475569;
+  --color-maintenance-light: #F1F5F9;
+  --color-maintenance-border: #CBD5E1;
+
+  /* Semantic Aliases */
+  --color-success: var(--color-available);
+  --color-success-dark: var(--color-available-dark);
+  --color-success-light: var(--color-available-light);
+
+  --color-warning: var(--color-reserved);
+  --color-warning-dark: var(--color-reserved-dark);
+  --color-warning-light: var(--color-reserved-light);
+
+  --color-danger: var(--color-overdue);
+  --color-danger-dark: var(--color-overdue-dark);
+  --color-danger-light: var(--color-overdue-light);
+
+  --color-info: var(--color-occupied);
+  --color-info-dark: var(--color-occupied-dark);
+  --color-info-light: var(--color-occupied-light);
+
+  --color-purple: var(--color-cleaning);
+  --color-purple-dark: var(--color-cleaning-dark);
+  --color-purple-light: var(--color-cleaning-light);
+
+  /* 3D Shadows & Layered Elevations */
+  --shadow-3d-subtle: 0 1px 3px rgba(30, 41, 59, 0.04), 0 1px 2px rgba(30, 41, 59, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --shadow-3d-card: 0 4px 14px -2px rgba(20, 43, 74, 0.05), 0 2px 6px -1px rgba(20, 43, 74, 0.03), inset 0 1px 1px rgba(255, 255, 255, 1), inset 0 -1px 0 rgba(226, 232, 240, 0.8);
+  --shadow-3d-card-hover: 0 10px 20px -4px rgba(20, 43, 74, 0.08), 0 4px 10px -2px rgba(20, 43, 74, 0.04), inset 0 1px 1px rgba(255, 255, 255, 1), inset 0 -1px 0 rgba(203, 213, 225, 0.9);
+  --shadow-3d-inset: inset 0 2px 4px rgba(20, 43, 74, 0.04), inset 0 -1px 0 rgba(255, 255, 255, 0.8);
+  
+  /* 3D Button Shadows (Tactile Extrusions) */
+  --btn-3d-primary: 0 3px 0 var(--color-teal-dark), 0 4px 10px var(--color-teal-glow);
+  --btn-3d-primary-active: 0 1px 0 var(--color-teal-dark), 0 2px 4px var(--color-teal-glow);
+
+  --btn-3d-success: 0 3px 0 var(--color-available-dark), 0 4px 10px rgba(22, 163, 74, 0.25);
+  --btn-3d-success-active: 0 1px 0 var(--color-available-dark), 0 2px 4px rgba(22, 163, 74, 0.25);
+
+  --btn-3d-danger: 0 3px 0 var(--color-overdue-dark), 0 4px 10px rgba(220, 38, 38, 0.25);
+  --btn-3d-danger-active: 0 1px 0 var(--color-overdue-dark), 0 2px 4px rgba(220, 38, 38, 0.25);
+
+  --btn-3d-secondary: 0 2px 0 #CBD5E1, 0 3px 8px rgba(100, 116, 139, 0.12);
+  --btn-3d-secondary-active: 0 1px 0 #CBD5E1, 0 1px 3px rgba(100, 116, 139, 0.12);
+
+  /* Border Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 18px;
+  --radius-pill: 9999px;
+
+  /* Transitions */
+  --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-tactile: transform 0.1s ease, box-shadow 0.1s ease;
+}
