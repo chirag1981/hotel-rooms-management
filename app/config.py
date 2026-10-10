@@ -18,7 +18,7 @@ class Config:
     WTF_CSRF_TIME_LIMIT = None
 
     # Hotel Defaults
-    HOTEL_NAME = os.environ.get('HOTEL_NAME', 'Hotel Rooms Management System')
+    HOTEL_NAME = os.environ.get('HOTEL_NAME', 'Hotel Rooms Management')
     HOTEL_CURRENCY = os.environ.get('HOTEL_CURRENCY', 'INR')
     HOTEL_CURRENCY_SYMBOL = os.environ.get('HOTEL_CURRENCY_SYMBOL', '₹')
     HOTEL_TIMEZONE = os.environ.get('HOTEL_TIMEZONE', 'Asia/Kolkata')

@@ -35,8 +35,8 @@ class HotelSettings(db.Model):
     __tablename__ = 'hotel_settings'
 
     id = db.Column(db.Integer, primary_key=True)
-    hotel_name = db.Column(db.String(150), nullable=False, default='Hotel Rooms Management System')
-    tagline = db.Column(db.String(255), nullable=True, default='Luxury, Comfort & Fine Cuisine')
+    hotel_name = db.Column(db.String(150), nullable=False, default='Hotel Rooms Management')
+    tagline = db.Column(db.String(255), nullable=True, default='Premier Accommodation & Room Management Experience')
     address_line = db.Column(db.String(255), nullable=True, default='108 Sea Breeze Boulevard, Marine Drive')
     city = db.Column(db.String(100), nullable=True, default='Mumbai')
     state = db.Column(db.String(100), nullable=True, default='Maharashtra')

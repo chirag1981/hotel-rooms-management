@@ -22,15 +22,15 @@ with app.app_context():
 
     print("Seeding Hotel Settings...")
     settings = HotelSettings(
-        hotel_name="Hotel Rooms Management System",
-        tagline="Luxury Stays & Exquisite Coastal Cuisine",
+        hotel_name="Hotel Rooms Management",
+        tagline="Premier Accommodation & Room Management Experience",
         address_line="108 Sea Breeze Boulevard, Marine Drive",
         city="Mumbai",
         state="Maharashtra",
         pincode="400020",
         country="India",
         phone="+91 98765 43210",
-        email="reservations@grandhorizonhotel.com",
+        email="reservations@hotelroomsmanagement.com",
         gstin="27AAACG0123M1Z5",
         currency_code="INR",
         currency_symbol="₹",

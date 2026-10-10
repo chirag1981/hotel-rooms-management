@@ -1,6 +1,6 @@
-# 🏨 Grand Horizon - Hotel & Restaurant Management System
+# 🏨 Hotel Rooms Management System
 
-A production-grade, full-featured **Hotel and Restaurant Management System** built with **Python Flask**, **Flask-SQLAlchemy**, **Flask-Login**, **Flask-WTF**, and styled with a modern **Light UI design system featuring 3D tactile aesthetics**.
+A production-grade, full-featured **Hotel Rooms Management System** built with **Python Flask**, **Flask-SQLAlchemy**, **Flask-Login**, **Flask-WTF**, and styled with a modern **Light UI design system featuring 3D tactile aesthetics**.
 
 ---
 
