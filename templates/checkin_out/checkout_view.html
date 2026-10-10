@@ -44,7 +44,7 @@
 
                 <!-- Line Items Table -->
                 <div class="table-responsive mb-3">
-                    <table class="table table-sm align-middle">
+                    <table class="table table-dashboard align-middle">
                         <thead class="table-light small text-muted">
                             <tr>
                                 <th>Particulars</th>
@@ -55,11 +55,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for item in calc.items %}
+                            {% for item in calc['items'] %}
                             <tr>
                                 <td>
                                     <div class="fw-semibold">{{ item.description }}</div>
-                                    <div class="text-muted small">{{ item.item_type|capitalize }}</div>
+                                    <div class="text-muted" style="font-size: 0.72rem;">{{ item.item_type|capitalize }}</div>
                                 </td>
                                 <td class="text-center font-mono">{{ item.quantity }}</td>
                                 <td class="text-end font-mono">₹ {{ item.unit_price }}</td>
