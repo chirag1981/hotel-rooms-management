@@ -176,7 +176,7 @@ h6, .h6 { font-size: 0.82rem; }
 
 /* Top Navbar */
 .app-topbar {
-  height: 52px;
+  height: 50px;
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border-light);
   padding: 0 1.25rem;
@@ -184,12 +184,99 @@ h6, .h6 { font-size: 0.82rem; }
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02);
+  z-index: 90;
 }
 
 .topbar-actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
+}
+
+/* User Profile Topbar Dropdown (Compact & Elegant) */
+.user-profile-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-pill);
+  padding: 0.2rem 0.55rem 0.2rem 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1.15;
+  transition: var(--transition-smooth);
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.user-profile-btn:hover, .user-profile-btn:focus-visible {
+  background: #F8FAFC;
+  border-color: #CBD5E1;
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.08);
+}
+
+.user-profile-avatar {
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-navy) 0%, #1e3a5f 100%);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.68rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(20, 43, 74, 0.25);
+  letter-spacing: -0.02em;
+}
+
+.user-profile-details {
+  text-align: left;
+  max-width: 120px;
+}
+
+.user-profile-name {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-profile-role {
+  font-size: 0.60rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 3px;
+  padding: 0 0.28rem;
+  display: inline-block;
+  line-height: 1.2;
+}
+
+.dropdown-menu {
+  font-size: 0.76rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+}
+
+.dropdown-item {
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.65rem;
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: background 0.15s ease;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+  background: #F8FAFC;
+  color: var(--color-teal);
 }
 
 /* ==========================================================================
@@ -669,8 +756,25 @@ h6, .h6 { font-size: 0.82rem; }
 /* ==========================================================================
    Print & Responsive Styles
    ========================================================================== */
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 1040;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.sidebar-backdrop.show {
+  opacity: 1;
+  visibility: visible;
+}
+
 @media print {
-  .app-sidebar, .app-topbar, .btn-3d, .no-print {
+  .app-sidebar, .app-topbar, .btn-3d, .no-print, .sidebar-backdrop {
     display: none !important;
   }
   body, .app-main, .app-wrapper {
@@ -684,14 +788,64 @@ h6, .h6 { font-size: 0.82rem; }
   }
 }
 
-@media (max-width: 992px) {
+@media (max-width: 991.98px) {
   .app-sidebar {
     position: fixed;
-    left: -250px;
+    left: -260px;
     top: 0;
     bottom: 0;
+    width: 245px;
+    z-index: 1050;
+    box-shadow: 4px 0 24px rgba(15, 23, 42, 0.25);
+    transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .app-sidebar.show {
     left: 0;
+  }
+  .app-topbar {
+    padding: 0 0.85rem;
+    height: 48px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  html {
+    font-size: 13.5px;
+  }
+  .app-topbar {
+    padding: 0 0.55rem;
+    height: 46px;
+  }
+  .topbar-actions {
+    gap: 0.35rem;
+  }
+  .user-profile-btn {
+    padding: 0.15rem 0.35rem 0.15rem 0.15rem;
+  }
+  .user-profile-avatar {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    font-size: 0.64rem;
+  }
+  main.p-3 {
+    padding: 0.75rem !important;
+  }
+  .stat-card-3d {
+    min-height: 70px;
+    padding: 0.5rem 0.65rem;
+  }
+  .stat-value {
+    font-size: 1.05rem;
+  }
+  .room-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.5rem;
+  }
+  .room-card-3d {
+    padding: 0.45rem 0.55rem;
+  }
+  .card-header-3d {
+    padding: 0.45rem 0.65rem;
   }
 }

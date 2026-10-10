@@ -6,13 +6,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
 
-    // 2. Mobile Sidebar Toggle
+    // 2. Mobile Sidebar Toggle & Backdrop
     const sidebarToggleBtn = document.getElementById('sidebarToggle');
+    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
     const sidebar = document.querySelector('.app-sidebar');
-    if (sidebarToggleBtn && sidebar) {
-        sidebarToggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('show');
+
+    function openSidebar() {
+        if (sidebar) sidebar.classList.add('show');
+        if (sidebarBackdrop) sidebarBackdrop.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+        if (sidebar) sidebar.classList.remove('show');
+        if (sidebarBackdrop) sidebarBackdrop.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    if (sidebarToggleBtn) {
+        sidebarToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (sidebar && sidebar.classList.contains('show')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
         });
+    }
+
+    if (sidebarCloseBtn) {
+        sidebarCloseBtn.addEventListener('click', closeSidebar);
+    }
+
+    if (sidebarBackdrop) {
+        sidebarBackdrop.addEventListener('click', closeSidebar);
     }
 
     // 3. Dynamic Room Availability in Booking Form

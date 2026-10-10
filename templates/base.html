@@ -28,10 +28,13 @@
                 <div class="brand-icon-3d">
                     <i class="bi bi-buildings"></i>
                 </div>
-                <div>
-                    <div class="brand-title">{{ hotel_settings.hotel_name if hotel_settings else 'Hotel Rooms Management' }}</div>
+                <div class="flex-grow-1 min-w-0">
+                    <div class="brand-title text-truncate">{{ hotel_settings.hotel_name if hotel_settings else 'Hotel Rooms Management' }}</div>
                     <div class="brand-subtitle">Hotel Management System</div>
                 </div>
+                <button class="btn btn-sm text-white-50 p-0 d-lg-none" id="sidebarCloseBtn" type="button" aria-label="Close sidebar">
+                    <i class="bi bi-x-lg fs-5"></i>
+                </button>
             </div>
 
             <nav class="sidebar-nav">
@@ -100,16 +103,19 @@
 
         </aside>
 
+        <!-- Sidebar backdrop for mobile -->
+        <div class="sidebar-backdrop d-lg-none" id="sidebarBackdrop"></div>
+
         <!-- Main Content Area -->
         <div class="app-main">
             <!-- Topbar -->
             <header class="app-topbar">
-                <div class="d-flex align-items-center gap-3">
-                    <button class="btn btn-sm btn-light d-lg-none" id="sidebarToggle" type="button" aria-label="Toggle menu">
+                <div class="d-flex align-items-center gap-2 gap-md-3">
+                    <button class="btn btn-sm btn-light border d-lg-none py-1 px-2" id="sidebarToggle" type="button" aria-label="Toggle menu">
                         <i class="bi bi-list fs-5"></i>
                     </button>
                     <div class="d-none d-md-flex align-items-center text-muted small">
-                        <i class="bi bi-clock me-1"></i>
+                        <i class="bi bi-clock me-1 text-teal"></i>
                         <span>{{ current_datetime.strftime('%A, %d %B %Y') }}</span>
                     </div>
                 </div>
@@ -117,26 +123,27 @@
                 <div class="topbar-actions">
                     <a href="{{ url_for('bookings.new') }}" class="btn-3d btn-3d-primary btn-sm">
                         <i class="bi bi-plus-circle"></i>
-                        <span>Quick Booking</span>
+                        <span class="d-none d-sm-inline">Quick Booking</span>
+                        <span class="d-sm-none">Book</span>
                     </a>
 
-                    <!-- User Profile Dropdown -->
+                    <!-- Compact User Profile Dropdown -->
                     <div class="dropdown">
-                        <button class="btn btn-light dropdown-toggle d-flex align-items-center gap-2 border rounded-3 py-1 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px; font-size: 0.85rem;">
+                        <button class="user-profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="User Account Menu">
+                            <div class="user-profile-avatar">
                                 {{ current_user.full_name[:2].upper() }}
                             </div>
-                            <div class="text-start d-none d-sm-block">
-                                <div class="fw-bold fs-7 lh-1">{{ current_user.full_name }}</div>
-                                <span class="badge bg-secondary-subtle text-secondary py-0" style="font-size: 0.68rem;">{{ current_user.role|capitalize }}</span>
+                            <div class="user-profile-details d-none d-sm-block">
+                                <div class="user-profile-name">{{ current_user.full_name }}</div>
+                                <span class="user-profile-role">{{ current_user.role|capitalize }}</span>
                             </div>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border">
-                            <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}"><i class="bi bi-person me-2"></i>My Profile</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border py-1">
+                            <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}"><i class="bi bi-person me-2 text-muted"></i>My Profile</a></li>
                             {% if current_user.is_admin %}
-                            <li><a class="dropdown-item" href="{{ url_for('settings.index') }}"><i class="bi bi-gear me-2"></i>System Settings</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('settings.index') }}"><i class="bi bi-gear me-2 text-muted"></i>System Settings</a></li>
                             {% endif %}
-                            <li><hr class="dropdown-divider"></li>
+                            <li><hr class="dropdown-divider my-1"></li>
                             <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Sign Out</a></li>
                         </ul>
                     </div>
